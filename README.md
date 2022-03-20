@@ -105,6 +105,9 @@ sudo ldconfig
 cd ../../../
 ```
 
+### Configuring Virtual Machines to recognize Ettus USRP devices
+***//TODO: Add this as an application note in readthedocs. This is a supplement. Not an essential part of readme.*** **
+
 Support
 =======
 
