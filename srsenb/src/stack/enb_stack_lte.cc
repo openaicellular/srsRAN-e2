@@ -276,6 +276,10 @@ bool enb_stack_lte::get_metrics(stack_metrics_t* metrics)
       pdcp.get_metrics(metrics.pdcp, metrics.mac.ues[0].nof_tti);
     }
     rrc.get_metrics(metrics.rrc);
+    #ifdef ENABLE_RIC_AGENT_KPM
+    //pdcp.get_metrics(metrics.pdcp);
+    pdcp.get_metrics_kpm(metrics.pdcp_kpm);
+    #endif
     s1ap.get_metrics(metrics.s1ap);
     if (not pending_stack_metrics.try_push(metrics)) {
       stack_logger.error("Unable to push metrics to queue");

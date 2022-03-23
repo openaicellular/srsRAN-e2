@@ -28,8 +28,10 @@
 #include "srsenb/hdr/phy/phy_metrics.h"
 #include "srsenb/hdr/stack/mac/common/mac_metrics.h"
 #include "srsenb/hdr/stack/rrc/rrc_metrics.h"
+//Adding KPI Mon xApp Changes
+//pdcp_metrics_kpi.h is new header file which contains metric parameters of pdcp required for KPI Mon metrics collection
 #ifdef ENABLE_RIC_AGENT_KPM
-#include "srsenb/hdr/stack/upper/pdcp_metrics.h"
+#include "srsenb/hdr/stack/upper/pdcp_metrics_kpi.h"
 #endif
 #include "srsenb/hdr/stack/s1ap/s1ap_metrics.h"
 #include "srsran/common/metrics_hub.h"
@@ -48,6 +50,10 @@ struct rlc_metrics_t {
 struct pdcp_metrics_t {
   std::vector<srsran::pdcp_metrics_t> ues;
 };
+
+#ifdef ENABLE_RIC_AGENT_KPM
+  pdcp_metrics_kpm_t pdcp_kpm;
+#endif
 
 struct stack_metrics_t {
   mac_metrics_t  mac;

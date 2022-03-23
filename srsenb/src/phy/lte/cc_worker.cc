@@ -632,6 +632,9 @@ uint32_t cc_worker::get_metrics(std::vector<phy_metrics_t>& metrics)
   for (auto& ue : ue_db) {
     if ((SRSRAN_RNTI_ISUSER(ue.first) || ue.first == SRSRAN_MRNTI)) {
       ue.second->metrics_read(&metrics[cnt++]);
+#ifdef ENABLE_RIC_AGENT_KPM
+      metrics[cnt].cc_idx = cc_idx;
+#endif
     }
   }
   metrics.resize(cnt);

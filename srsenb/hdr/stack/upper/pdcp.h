@@ -27,6 +27,10 @@
 #include "srsran/interfaces/ue_rlc_interfaces.h"
 #include "srsran/srslog/srslog.h"
 #include "srsran/upper/pdcp.h"
+#ifdef ENABLE_RIC_AGENT_KPM
+#include "srsenb/hdr/stack/upper/pdcp_metrics_kpi.h"
+#include "srsenb/hdr/stack/rrc/rrc_config.h"
+#endif
 #include <map>
 
 #ifndef SRSENB_PDCP_H
@@ -58,7 +62,12 @@ public:
   void add_user(uint16_t rnti) override;
   void rem_user(uint16_t rnti) override;
   void write_sdu(uint16_t rnti, uint32_t lcid, srsran::unique_byte_buffer_t sdu, int pdcp_sn = -1) override;
+//void add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cnfg) override;
+  #ifdef ENABLE_RIC_AGENT_KPM
+  void add_bearer(uint16_t rnti, uint32_t lcid, int8_t qci, const srsran::pdcp_config_t& cnfg) override;
+  #else
   void add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cnfg) override;
+  #endif
   void del_bearer(uint16_t rnti, uint32_t lcid) override;
   void config_security(uint16_t rnti, uint32_t lcid, const srsran::as_security_config_t& cfg_sec) override;
   void enable_integrity(uint16_t rnti, uint32_t lcid) override;
@@ -72,6 +81,11 @@ public:
   // pdcp_interface_gtpu
   std::map<uint32_t, srsran::unique_byte_buffer_t> get_buffered_pdus(uint16_t rnti, uint32_t lcid) override;
 
+  //Adding a new method for KPM Mon xApp metric collection of PDCP parameters
+  #ifdef ENABLE_RIC_AGENT_KPM
+  void get_metrics_kpm(pdcp_metrics_kpm_t& m);
+  #endif
+
   // Metrics
   void get_metrics(pdcp_metrics_t& m, const uint32_t nof_tti);
 
@@ -80,6 +94,11 @@ private:
   {
   public:
     uint16_t                    rnti;
+#ifdef ENABLE_RIC_AGENT_KPM
+    int8_t                      bearer_qci_map[SRSENB_N_RADIO_BEARERS];
+    uint64_t                    dl_bytes[SRSENB_N_RADIO_BEARERS];
+    uint64_t                    dl_bytes_by_qci[MAX_NOF_QCI];
+#endif
     srsenb::rlc_interface_pdcp* rlc;
     // rlc_interface_pdcp
     void write_sdu(uint32_t lcid, srsran::unique_byte_buffer_t sdu);
@@ -93,6 +112,11 @@ private:
   {
   public:
     uint16_t                     rnti;
+#ifdef ENABLE_RIC_AGENT_KPM
+    int8_t                       bearer_qci_map[SRSENB_N_RADIO_BEARERS];
+    uint64_t                     ul_bytes[SRSENB_N_RADIO_BEARERS];
+    uint64_t                     ul_bytes_by_qci[MAX_NOF_QCI];
+#endif
     srsenb::gtpu_interface_pdcp* gtpu;
     // gw_interface_pdcp
     void write_pdu(uint32_t lcid, srsran::unique_byte_buffer_t pdu);

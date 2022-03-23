@@ -43,6 +43,7 @@ struct dl_metrics_t {
 };
 
 struct phy_metrics_t {
+//Adding cell id parameter for KPI xApp metrics collection
 #ifdef ENABLE_RIC_AGENT_KPM
   uint32_t cc_idx;
 #endif

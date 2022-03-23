@@ -45,13 +45,14 @@ public:
   virtual void add_user(uint16_t rnti)                                                                     = 0;
   virtual void rem_user(uint16_t rnti)                                                                     = 0;
   virtual void write_sdu(uint16_t rnti, uint32_t lcid, srsran::unique_byte_buffer_t sdu, int pdcp_sn = -1) = 0;
+//Adding a modified bearer method for PDCP interface for RRC
 #ifdef ENABLE_RIC_AGENT_KPM
   virtual void add_bearer(uint16_t rnti, uint32_t lcid, int8_t qci, const srsran::pdcp_config_t& cnfg)      = 0;
 #else
   virtual void add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cnfg)                  = 0;
 #endif
 
-//  virtual void add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cnfg)                 = 0;
+//virtual void add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cnfg)                 = 0;
   virtual void del_bearer(uint16_t rnti, uint32_t lcid)                                                    = 0;
   virtual void config_security(uint16_t rnti, uint32_t lcid, const srsran::as_security_config_t& sec_cfg)  = 0;
   virtual void enable_integrity(uint16_t rnti, uint32_t lcid)                                              = 0;

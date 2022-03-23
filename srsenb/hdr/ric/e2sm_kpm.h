@@ -7,8 +7,9 @@
 
 #include "pthread.h"
 
-//#include "srsran/common/timeout.h"
-#include "srsenb/hdr/stack/upper/common_enb.h" // Not present
+#include "srsran/common/timeout.h"
+//#include "srsenb/hdr/stack/upper/common_enb.h" // Not present
+#include "srsenb/hdr/common/common_enb.h" //common_enb.h moved to new folder in srsRAN codebase
 #include "srsran/interfaces/enb_metrics_interface.h" 
 #include "srsenb/hdr/stack/rrc/rrc_metrics.h"
 

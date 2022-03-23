@@ -77,7 +77,12 @@ void pdcp::rem_user(uint16_t rnti)
   }
 }
 
+//void pdcp::add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cfg)
+#ifdef ENABLE_RIC_AGENT_KPM
+void pdcp::add_bearer(uint16_t rnti, uint32_t lcid, int8_t qci, const srsran::pdcp_config_t& cfg)
+#else
 void pdcp::add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t& cfg)
+#endif
 {
   if (users.count(rnti)) {
     if (rnti != SRSRAN_MRNTI) {
@@ -85,6 +90,10 @@ void pdcp::add_bearer(uint16_t rnti, uint32_t lcid, const srsran::pdcp_config_t&
     } else {
       users[rnti].pdcp->add_bearer_mrb(lcid, cfg);
     }
+#ifdef ENABLE_RIC_AGENT_KPM
+    users[rnti].rlc_itf.bearer_qci_map[lcid] = qci;
+    users[rnti].gtpu_itf.bearer_qci_map[lcid] = qci;
+#endif    
   }
 }
 
@@ -208,11 +217,19 @@ void pdcp::write_pdu(uint16_t rnti, uint32_t lcid, srsran::unique_byte_buffer_t 
 
 void pdcp::user_interface_gtpu::write_pdu(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
 {
+#ifdef ENABLE_RIC_AGENT_KPM
+  ul_bytes[lcid] += pdu->N_bytes;
+  ul_bytes_by_qci[bearer_qci_map[lcid]] += pdu->N_bytes;
+#endif
   gtpu->write_pdu(rnti, lcid, std::move(pdu));
 }
 
 void pdcp::user_interface_rlc::write_sdu(uint32_t lcid, srsran::unique_byte_buffer_t sdu)
 {
+#ifdef ENABLE_RIC_AGENT_KPM
+  dl_bytes[lcid] += sdu->N_bytes;
+  dl_bytes_by_qci[bearer_qci_map[lcid]] += sdu->N_bytes;
+#endif
   rlc->write_sdu(rnti, lcid, std::move(sdu));
 }
 
@@ -265,6 +282,22 @@ const char* pdcp::user_interface_rrc::get_rb_name(uint32_t lcid)
 {
   return srsenb::get_rb_name(lcid);
 }
+
+#ifdef ENABLE_RIC_AGENT_KPM
+void pdcp::get_metrics_kpm(pdcp_metrics_kpm_t& m)
+{
+  m.n_ues = 0;
+  for (auto iter = users.begin(); m.n_ues <  SRSENB_MAX_UES && iter != users.end(); ++iter) {
+    user_interface& u = iter->second;
+    m.ues[m.n_ues].rnti = u.rlc_itf.rnti;
+    memcpy(m.ues[m.n_ues].dl_bytes,u.rlc_itf.dl_bytes,sizeof(m.ues[m.n_ues].dl_bytes));
+    memcpy(m.ues[m.n_ues].ul_bytes,u.gtpu_itf.ul_bytes,sizeof(m.ues[m.n_ues].ul_bytes));
+    memcpy(m.ues[m.n_ues].dl_bytes_by_qci,u.rlc_itf.dl_bytes_by_qci,sizeof(m.ues[m.n_ues].dl_bytes_by_qci));
+    memcpy(m.ues[m.n_ues].ul_bytes_by_qci,u.gtpu_itf.ul_bytes_by_qci,sizeof(m.ues[m.n_ues].ul_bytes_by_qci));
+    ++m.n_ues;
+  }
+}
+#endif
 
 void pdcp::get_metrics(pdcp_metrics_t& m, const uint32_t nof_tti)
 {

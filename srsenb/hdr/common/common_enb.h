@@ -35,6 +35,9 @@ namespace srsenb {
 #define SRSENB_RRC_MAX_N_PLMN_IDENTITIES 6
 
 #define SRSENB_N_SRB 3
+#ifdef ENABLE_RIC_AGENT_KPM
+#define SRSENB_N_RADIO_BEARERS 14
+#endif
 #define SRSENB_MAX_UES 64
 const uint32_t MAX_ERAB_ID   = 15;
 const uint32_t MAX_NOF_ERABS = 16;

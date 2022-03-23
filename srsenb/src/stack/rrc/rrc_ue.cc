@@ -1472,8 +1472,12 @@ void rrc::ue::apply_reconf_phy_config(const rrc_conn_recfg_r8_ies_s& reconfig_r8
 void rrc::ue::apply_pdcp_srb_updates(const rr_cfg_ded_s& pending_rr_cfg)
 {
   for (const srb_to_add_mod_s& srb : pending_rr_cfg.srb_to_add_mod_list) {
+    //parent->pdcp->add_bearer(rnti, srb.srb_id, srsran::make_srb_pdcp_config_t(srb.srb_id, false));
+    #ifdef ENABLE_RIC_AGENT_KPM
+    parent->pdcp->add_bearer(rnti, srb.srb_id, 0, srsran::make_srb_pdcp_config_t(srb.srb_id, false));
+    #else
     parent->pdcp->add_bearer(rnti, srb.srb_id, srsran::make_srb_pdcp_config_t(srb.srb_id, false));
-
+    #endif
     // enable security config
     if (ue_security_cfg.is_as_sec_cfg_valid()) {
       parent->pdcp->config_security(rnti, srb.srb_id, ue_security_cfg.get_as_sec_cfg());
@@ -1492,10 +1496,19 @@ void rrc::ue::apply_pdcp_drb_updates(const rr_cfg_ded_s& pending_rr_cfg)
     // Configure DRB1 in PDCP
     if (drb.pdcp_cfg_present) {
       srsran::pdcp_config_t pdcp_cnfg_drb = srsran::make_drb_pdcp_config_t(drb.drb_id, false, drb.pdcp_cfg);
+      //parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
+      parent->pdcp->add_bearer(rnti, drb.lc_ch_id, bearer_list.erabs[drb.lc_ch_id + 2].qos_params.qci, pdcp_cnfg_drb);
+      #else
       parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
+      #endif
     } else {
       srsran::pdcp_config_t pdcp_cnfg_drb = srsran::make_drb_pdcp_config_t(drb.drb_id, false);
+      //parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
+      #ifdef ENABLE_RIC_AGENT_KPM
+      parent->pdcp->add_bearer(rnti, drb.lc_ch_id, bearer_list.erabs[drb.lc_ch_id + 2].qos_params.qci, pdcp_cnfg_drb);
+      #else
       parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
+      #endif
     }
 
     if (ue_security_cfg.is_as_sec_cfg_valid()) {

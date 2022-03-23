@@ -44,6 +44,7 @@ typedef enum {
 struct rrc_ue_metrics_t {
   rrc_state_t                                 state;
   std::vector<std::pair<uint32_t, uint32_t> > drb_qci_map;
+// Adding rnti parameter for KPI Mon xAPP collection
 #ifdef ENABLE_RIC_AGENT_KPM
   uint16_t    rnti;
 #endif

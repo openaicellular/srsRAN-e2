@@ -1424,8 +1424,12 @@ int rrc_nr::ue::add_drb()
 
   // Add DRB1 to PDCP
   srsran::pdcp_config_t pdcp_cnfg = srsran::make_drb_pdcp_config_t(drb_item.drb_id, false, drb_item.pdcp_cfg);
+  //parent->pdcp->add_bearer(rnti, rlc_bearer.lc_ch_id, pdcp_cnfg);
+  #ifdef ENABLE_RIC_AGENT_KPM
+  parent->pdcp->add_bearer(rnti, rlc_bearer.lc_ch_id,0, pdcp_cnfg);
+  #else
   parent->pdcp->add_bearer(rnti, rlc_bearer.lc_ch_id, pdcp_cnfg);
-
+  #endif
   // Note: DRB1 is only activated in the MAC when the C-RNTI CE is received
 
   return SRSRAN_SUCCESS;

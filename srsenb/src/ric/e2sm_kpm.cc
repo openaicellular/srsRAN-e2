@@ -1,7 +1,8 @@
 
 #include "srslte/interfaces/enb_metrics_interface.h"
 #include "srsenb/hdr/stack/rrc/rrc_metrics.h"
-#include "srsenb/hdr/stack/upper/common_enb.h"
+//#include "srsenb/hdr/stack/upper/common_enb.h"
+#include "srsenb/hdr/common/common_enb.h"
 #include "srsenb/hdr/ric/e2ap.h"
 #include "srsenb/hdr/ric/e2sm.h"
 #include "srsenb/hdr/ric/agent.h"
@@ -52,14 +53,19 @@ kpm_model::metrics::metrics(srsenb::enb_metrics_t *em)
   memset(ul_bytes_by_qci,0,sizeof(ul_bytes_by_qci));
   memset(dl_prbs_by_qci,0,sizeof(dl_prbs_by_qci));
   memset(ul_prbs_by_qci,0,sizeof(ul_prbs_by_qci));
-  for (uint16_t i = 0; i < em->stack.rrc.n_ues && i < ENB_METRICS_MAX_USERS; ++i) {
+
+//ENB_METRICS_MAX_USERS not used in srslte codebase //replacing it with SRSENB_MAX_UES
+//int n_ues = em->stack.rrc.ues.size();
+//for (uint16_t i = 0; i < em->stack.rrc.n_ues && i < ENB_METRICS_MAX_USERS; ++i) { //ENB_METRICS_MAX_USERS not defined in srsRAN codebase
+
+  for (uint16_t i = 0; i < em->stack.rrc.ues.size() && i < SRSENB_MAX_UES; ++i) {
     if (em->stack.rrc.ues[i].state == srsenb::RRC_STATE_REGISTERED)
       ++active_ue_count;
   }
-  for (uint16_t i = 0; i < em->stack.pdcp.n_ues && i < ENB_METRICS_MAX_USERS; ++i) {
+  for (uint16_t i = 0; i < em->stack.pdcp_kpm.n_ues && i < SRSENB_MAX_UES; ++i) {
     for (int j = 0; j < MAX_NOF_QCI; ++j) {
-      dl_bytes_by_qci[j] += em->stack.pdcp.ues[i].dl_bytes_by_qci[j];
-      ul_bytes_by_qci[j] += em->stack.pdcp.ues[i].ul_bytes_by_qci[j];
+      dl_bytes_by_qci[j] += em->stack.pdcp_kpm.ues[i].dl_bytes_by_qci[j];
+      ul_bytes_by_qci[j] += em->stack.pdcp_kpm.ues[i].ul_bytes_by_qci[j];
       if (!have_bytes && (dl_bytes_by_qci[j] > 0 || ul_bytes_by_qci[j] > 0))
 	have_bytes = true;
     }

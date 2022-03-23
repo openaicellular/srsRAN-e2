@@ -54,6 +54,7 @@ public:
   void add_user(uint16_t rnti) override {}
   void rem_user(uint16_t rnti) override {}
   void write_sdu(uint16_t rnti, uint32_t lcid, srsran::unique_byte_buffer_t sdu, int pdcp_sn) override {}
+//Adding KPI mon chnages
 #ifdef ENABLE_RIC_AGENT_KPM
   void add_bearer(uint16_t rnti, uint32_t lcid, int8_t qci, const srsran::pdcp_config_t& cnfg) override {}
 #else
