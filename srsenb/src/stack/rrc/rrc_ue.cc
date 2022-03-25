@@ -1497,6 +1497,7 @@ void rrc::ue::apply_pdcp_drb_updates(const rr_cfg_ded_s& pending_rr_cfg)
     if (drb.pdcp_cfg_present) {
       srsran::pdcp_config_t pdcp_cnfg_drb = srsran::make_drb_pdcp_config_t(drb.drb_id, false, drb.pdcp_cfg);
       //parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
+      #ifdef ENABLE_RIC_AGENT_KPM
       parent->pdcp->add_bearer(rnti, drb.lc_ch_id, bearer_list.erabs[drb.lc_ch_id + 2].qos_params.qci, pdcp_cnfg_drb);
       #else
       parent->pdcp->add_bearer(rnti, drb.lc_ch_id, pdcp_cnfg_drb);
