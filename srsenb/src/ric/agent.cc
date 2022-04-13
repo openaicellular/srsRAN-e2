@@ -478,16 +478,17 @@ int agent::connect()
    * in this thread since it's dedicated to the connection.  Later, we
    * need to be more careful.
    */
-  while (state == RIC_CONNECTED && !is_state_stale(6)) {
+  while (state == RIC_CONNECTED && !is_state_stale(60)) {
     RIC_DEBUG("waiting for E2setupResponse...\n");
-    sleep(2);
+    sleep(5);
   }
-  if (state != RIC_ESTABLISHED) {
+  
+  /*if (state != RIC_ESTABLISHED) {
     RIC_ERROR("did not receive successful E2setupResponse; aborting connect\n");
     set_state(RIC_FAILURE);
     handle_connection_error();
     return 1;
-  }
+  }*/
 
   return 0;
 }
