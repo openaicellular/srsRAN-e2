@@ -107,7 +107,7 @@ option(ENABLE_ALL_TEST       "Enable all unit/component test"           OFF)
 option(BUILD_WITH_LTO        "Enable LTO (experimental)"                OFF)
 
 option(ENABLE_RIC_AGENT        "Enable RIC E2 Agent"              ON)
-option(ENABLE_RIC_AGENT_KPM    "Enable RIC E2 Agent KPM metrics"  OFF)
+option(ENABLE_RIC_AGENT_KPM    "Enable RIC E2 Agent KPM metrics"  ON)
 option(ENABLE_RIC_AGENT_NEXRAN "Enable RIC E2 Agent NexRAN model" OFF)
 option(ENABLE_SLICER           "Enable NexRAN Slicer"             OFF)
 
