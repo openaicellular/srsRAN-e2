@@ -51,15 +51,16 @@ struct pdcp_metrics_t {
   std::vector<srsran::pdcp_metrics_t> ues;
 };
 
-#ifdef ENABLE_RIC_AGENT_KPM
-  pdcp_metrics_kpm_t pdcp_kpm;
-#endif
+
 
 struct stack_metrics_t {
   mac_metrics_t  mac;
   rrc_metrics_t  rrc;
   rlc_metrics_t  rlc;
   pdcp_metrics_t pdcp;
+  #ifdef ENABLE_RIC_AGENT_KPM
+  pdcp_metrics_kpm_t pdcp_kpm;
+  #endif
   s1ap_metrics_t s1ap;
 };
 
