@@ -60,6 +60,9 @@ struct stack_metrics_t {
   rrc_metrics_t  rrc;
   rlc_metrics_t  rlc;
   pdcp_metrics_t pdcp;
+  #ifdef ENABLE_RIC_AGENT_KPM
+  pdcp_metrics_kpm_t pdcp_kpm;
+  #endif
   s1ap_metrics_t s1ap;
 };
 
