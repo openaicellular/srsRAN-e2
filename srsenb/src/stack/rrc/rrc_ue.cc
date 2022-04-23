@@ -364,6 +364,7 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
     case ul_dcch_msg_type_c::c1_c_::types::rrc_conn_reest_complete:
       save_ul_message(std::move(original_pdu));
 #ifdef ENABLE_SLICER
+      const rrc_conn_reest_request_r8_ies_s& req_r8   = msg->crit_exts.rrc_conn_reest_request_r8();
       uint16_t old_rnti = req_r8.ue_id.c_rnti.to_number();
       srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionReestComplete...\n", rnti);
       srsran::console("[slicer rrc] [RNTI: 0x%x] updating old RNTI: 0x%x with new RNTI: 0x%x\n",
