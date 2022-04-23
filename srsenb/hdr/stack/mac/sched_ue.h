@@ -217,7 +217,9 @@ private:
   uint32_t cqi_request_tti = 0;
   uint16_t rnti            = 0;
   uint32_t max_msg3retx    = 0;
-
+  #ifdef ENABLE_SLICER
+  uint8_t slice_status = 2;
+  #endif
   bool phy_config_dedicated_enabled = false;
 
   tti_point                  current_tti;
