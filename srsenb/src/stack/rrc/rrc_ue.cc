@@ -33,7 +33,8 @@
 #include "srsran/interfaces/enb_s1ap_interfaces.h"
 #include "srsran/support/srsran_assert.h"
 #ifdef ENABLE_SLICER
-#include "srsran/asn1/s1ap_asn1.h"
+//#include "srsran/asn1/s1ap_asn1.h"
+#include "srsran/asn1/s1ap.h"
 #endif
 
 #ifdef ENABLE_SLICER
