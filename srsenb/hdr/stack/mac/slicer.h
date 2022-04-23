@@ -1,15 +1,15 @@
 #ifndef __SLICER_H_
 #define __SLICER_H_
 
-#include "srslte/common/common.h"
-#include "srslte/common/log.h"
+//#include "srsran/common/common.h"
+//#include "srsran/common/log.h"
 #include <map>
 #include <mutex>
 #include <string>
 #include <stdint.h>
 #include <vector>
 
-#include "srslte/interfaces/enb_interfaces.h"
+#include "srsran/interfaces/enb_interfaces.h"
 #include "slicer_defs.h"
 
 namespace slicer {
