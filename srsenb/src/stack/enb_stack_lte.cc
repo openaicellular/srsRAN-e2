@@ -26,6 +26,9 @@
 #include "srsran/interfaces/enb_x2_interfaces.h"
 #include "srsran/rlc/bearer_mem_pool.h"
 #include "srsran/srslog/event_trace.h"
+#ifdef ENABLE_SLICER
+#include <srsran/interfaces/enb_slicer_interface.h>
+#endif
 
 using namespace srsran;
 
@@ -310,4 +313,31 @@ void enb_stack_lte::write_pdu(uint16_t rnti, uint32_t lcid, srsran::unique_byte_
   x2_task_queue.push(std::bind(task, std::move(pdu)));
 }
 
+#ifdef ENABLE_SLICER
+// eNodeB slicer interface
+bool enb_stack_lte::slice_config(std::vector<slicer::slice_config_t> slice_configs)
+{
+  return mac.slicer.slice_config(slice_configs);
+}
+
+bool enb_stack_lte::slice_delete(std::vector<std::string> slice_names)
+{
+  return mac.slicer.slice_delete(slice_names);
+}
+
+std::vector<slicer::slice_status_t> enb_stack_lte::slice_status(std::vector<std::string> slice_names)
+{
+  return mac.slicer.slice_status(slice_names);
+}
+
+bool enb_stack_lte::slice_ue_bind(std::string slice_name, std::vector<uint64_t> imsi_list)
+{
+  return mac.slicer.slice_ue_bind(slice_name, imsi_list);
+}
+
+bool enb_stack_lte::slice_ue_unbind(std::string slice_name, std::vector<uint64_t> imsi_list)
+{
+  return mac.slicer.slice_ue_unbind(slice_name, imsi_list);
+}
+#endif
 } // namespace srsenb

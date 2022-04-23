@@ -342,6 +342,28 @@ void mac_controller::update_mac()
   mac->ue_cfg(rnti, &current_sched_ue_cfg);
 }
 
+#ifdef ENABLE_SLICER
+bool rrc::ue::mac_controller::is_slicer_enabled()
+{
+  return mac->is_slicer_enabled();
+}
+
+void rrc::ue::mac_controller::imsi_capture(uint64_t imsi, uint16_t rnti)
+{
+  mac->handle_imsi_capture(imsi, rnti);
+}
+
+void rrc::ue::mac_controller::tmsi_capture(uint32_t tmsi, uint16_t rnti)
+{
+  mac->handle_tmsi_capture(tmsi, rnti);
+}
+
+void rrc::ue::mac_controller::rnti_update(uint16_t old_rnti, uint16_t new_rnti)
+{
+  mac->handle_rnti_update(old_rnti, new_rnti);
+}
+#endif
+
 void ue_cfg_apply_phy_cfg_ded(ue_cfg_t& ue_cfg, const asn1::rrc::phys_cfg_ded_s& phy_cfg, const rrc_cfg_t& rrc_cfg)
 {
   // Apply SR config

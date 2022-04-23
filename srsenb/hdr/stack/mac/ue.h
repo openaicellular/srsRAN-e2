@@ -139,7 +139,12 @@ public:
      phy_interface_stack_lte*                 phy_,
      srslog::basic_logger&                    logger,
      uint32_t                                 nof_cells_,
-     srsran::obj_pool_itf<ue_cc_softbuffers>* softbuffer_pool);
+     srsran::obj_pool_itf<ue_cc_softbuffers>* softbuffer_pool
+     #ifdef ENABLE_SLICER
+     ,
+     uint8_t                  slice_status = false
+#endif
+);
 
   virtual ~ue();
   void reset();

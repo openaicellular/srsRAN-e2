@@ -83,6 +83,11 @@ public:
   uint32_t                  get_aggr_level(uint32_t enb_cc_idx, uint32_t nof_bits);
   void                      ul_buffer_add(uint8_t lcid, uint32_t bytes);
 
+#ifdef ENABLE_SLICER
+  void                             set_slice_status(uint8_t status) { slice_status = status; }
+  uint8_t                          get_slice_status() const { return slice_status; }
+#endif
+
   /*******************************************************
    * Functions used by scheduler metric objects
    *******************************************************/

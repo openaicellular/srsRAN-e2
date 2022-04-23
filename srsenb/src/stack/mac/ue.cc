@@ -192,7 +192,12 @@ ue::ue(uint16_t                                 rnti_,
        phy_interface_stack_lte*                 phy_,
        srslog::basic_logger&                    logger_,
        uint32_t                                 nof_cells_,
-       srsran::obj_pool_itf<ue_cc_softbuffers>* softbuffer_pool_) :
+       srsran::obj_pool_itf<ue_cc_softbuffers>* softbuffer_pool_
+       #ifdef ENABLE_SLICER
+       ,
+       uint8_t                  slice_status
+       #endif
+ ) :
   rnti(rnti_),
   sched(sched_),
   rrc(rrc_),

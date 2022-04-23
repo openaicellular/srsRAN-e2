@@ -24,9 +24,9 @@
 
 #include "sched.h"
 #include "sched_interface.h"
-/*#ifndef ENABLE_SLICER
-#include "srsenb/hdr/stack/mac/scheduler_metric.h"
-#endif*/
+#ifndef ENABLE_SLICER
+//#include "scheduler_metric.h"
+#endif
 #include "srsenb/hdr/common/rnti_pool.h"
 #include "srsenb/hdr/stack/mac/schedulers/sched_time_rr.h"
 #include "srsran/adt/circular_map.h"
@@ -43,6 +43,10 @@
 #include "ta.h"
 #include "ue.h"
 #include <vector>
+
+#ifdef ENABLE_SLICER
+#include "srsenb/hdr/stack/mac/slicer.h"
+#endif
 
 namespace srsenb {
 
@@ -116,6 +120,16 @@ public:
                   const srsran::mcch_msg_t*  mcch_,
                   const uint8_t*             mcch_payload,
                   const uint8_t              mcch_payload_length) override;
+  
+  #ifdef ENABLE_SLICER
+  // Interface from RRC to slicer
+  bool is_slicer_enabled();
+  void handle_imsi_capture(uint64_t imsi, uint16_t rnti) override;
+  void handle_tmsi_capture(uint32_t tmsi, uint16_t rnti) override;
+  void handle_rnti_update(uint16_t old_rnti, uint16_t new_rnti) override;
+
+  slicer::slicer slicer;
+  #endif
 
 private:
   bool     check_ue_active(uint16_t rnti);

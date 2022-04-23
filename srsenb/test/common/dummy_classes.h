@@ -50,6 +50,7 @@ public:
   {}
   uint16_t reserve_new_crnti(const sched_interface::ue_cfg_t& ue_cfg) override { return last_rnti++; }
 
+// MAC <-> RRC SLICER interface methods 
 #ifdef ENABLE_SLICER
   bool is_slicer_enabled() override { return false; };
   void handle_imsi_capture(uint64_t imsi, uint16_t rnti) override {};

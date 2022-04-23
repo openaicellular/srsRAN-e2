@@ -93,6 +93,9 @@ void sched_ue::set_cfg(const ue_cfg_t& cfg_)
     logger.info("SCHED: Enqueueing SCell Activation CMD for rnti=0x%x", rnti);
   }
 
+  #ifdef ENABLE_SLICER
+  slice_status = cfg_.slice_status;
+  #endif
   check_ue_cfg_correctness(cfg);
 }
 

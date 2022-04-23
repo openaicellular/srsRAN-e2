@@ -88,7 +88,11 @@ int sched::cell_cfg(const std::vector<sched_interface::cell_cfg_t>& cell_cfg)
 
   // setup all carriers cfg params
   for (uint32_t i = 0; i < sched_cell_params.size(); ++i) {
+#ifdef ENABLE_SLICER
+    carrier_schedulers[i]->carrier_cfg(sched_cell_params[i], slicer_workshare);
+#else    
     carrier_schedulers[i]->carrier_cfg(sched_cell_params[i]);
+#endif
   }
 
   configured = true;
@@ -282,6 +286,18 @@ std::array<int, SRSRAN_MAX_CARRIERS> sched::get_enb_ue_cc_map(uint16_t rnti)
       __PRETTY_FUNCTION__);
   return ret;
 }
+
+#ifdef ENABLE_SLICER
+void sched::set_ue_slice_status(uint16_t rnti, uint8_t status)
+{
+  ue_db_access_locked(rnti, [status](sched_ue& ue) { ue.set_slice_status(status); }, __PRETTY_FUNCTION__);
+}
+
+void sched::set_slicer_workshare(bool workshare)
+{
+  slicer_workshare = workshare;
+}
+#endif
 
 std::array<int, SRSRAN_MAX_CARRIERS> sched::get_enb_ue_activ_cc_map(uint16_t rnti)
 {

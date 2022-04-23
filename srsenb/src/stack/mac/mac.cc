@@ -66,6 +66,13 @@ bool mac::init(const mac_args_t&        args_,
 
   scheduler.init(rrc, args.sched);
 
+  #ifdef ENABLE_SLICER
+    if (args.slicer.enable) {
+      slicer.init(args.slicer);
+      scheduler.set_slicer_workshare(slicer.workshare);
+    }
+  #endif
+
   // Init softbuffer for SI messages
   common_buffers.resize(cells.size());
   for (auto& cc : common_buffers) {
@@ -258,6 +265,28 @@ void mac::get_metrics(mac_metrics_t& metrics)
     metrics.cc_info[cc].pci             = (cc < cell_config.size()) ? cell_config[cc].cell.id : 0;
   }
 }
+
+#ifdef ENABLE_SLICER
+bool mac::is_slicer_enabled()
+{
+  return slicer.enable;
+}
+
+void mac::handle_imsi_capture(uint64_t imsi, uint16_t rnti)
+{
+  slicer.upd_member_crnti(imsi, rnti);
+}
+
+void mac::handle_tmsi_capture(uint32_t tmsi, uint16_t rnti)
+{
+  slicer.upd_member_crnti(tmsi, rnti);
+}
+
+void mac::handle_rnti_update(uint16_t old_rnti, uint16_t new_rnti)
+{
+  slicer.upd_member_crnti(old_rnti, new_rnti);
+}
+#endif
 
 void mac::toggle_padding()
 {
@@ -595,6 +624,36 @@ int mac::get_dl_sched(uint32_t tti_tx_dl, dl_sched_list_t& dl_sched_res_list)
   if (!started) {
     return 0;
   }
+
+#ifdef ENABLE_SLICER
+  // Sets a variable on each sched_ue to indicate to the scheduler if it belongs
+  // to the the current slice, another slice, or no slice.
+  if (slicer.enable) {
+    auto sliced_crntis = slicer.get_all_slice_crntis();
+    auto cur_sf_crntis = slicer.get_cur_sf_crntis(tti_tx_dl);
+    if (sliced_crntis.empty()) {
+      for (auto& u : ue_db) {
+        scheduler.set_ue_slice_status(u.second->get_rnti(), 2);
+      }
+    } else {
+      for (auto& u : ue_db) {
+        if (std::find(cur_sf_crntis.begin(), cur_sf_crntis.end(), u.second->get_rnti()) != cur_sf_crntis.end()) {
+          // srslte::console("[slicer mac] RNTI: 0x%x slice_status: %u tti: %u ", u.second->get_rnti(), 0, tti_tx_dl);
+          scheduler.set_ue_slice_status(u.second->get_rnti(), IN_CUR_SLICE);
+        }
+        else if (std::find(sliced_crntis.begin(), sliced_crntis.end(), u.second->get_rnti()) != sliced_crntis.end())
+        {
+          // srslte::console("[slicer mac] RNTI: 0x%x slice_status: %u tti: %u ", u.second->get_rnti(), 1, tti_tx_dl);
+          scheduler.set_ue_slice_status(u.second->get_rnti(), IN_OTHER_SLICE);
+        }
+        else {
+          // srslte::console("[slicer mac] RNTI: 0x%x slice_status: %u tti: %u ", u.second->get_rnti(), 2, tti_tx_dl);
+          scheduler.set_ue_slice_status(u.second->get_rnti(), IN_NO_SLICE);
+        }
+      }
+    }
+  }
+#endif
 
   trace_threshold_complete_event("mac::run_slot", "total_time", std::chrono::microseconds(100));
   logger.set_context(TTI_SUB(tti_tx_dl, FDD_HARQ_DELAY_UL_MS));

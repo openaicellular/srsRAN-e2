@@ -41,7 +41,12 @@ public:
                          sched_result_ringbuffer* sched_results_);
   ~carrier_sched();
   void                   reset();
+  //void                   carrier_cfg(const sched_cell_params_t& sched_params_);
+  #ifdef ENABLE_SLICER
+  void                   carrier_cfg(const sched_cell_params_t& cell_params_, bool workshare);
+  #else
   void                   carrier_cfg(const sched_cell_params_t& sched_params_);
+  #endif
   void                   set_dl_tti_mask(uint8_t* tti_mask, uint32_t nof_sfs);
   const cc_sched_result& generate_tti_result(srsran::tti_point tti_rx);
   int                    dl_rach_info(dl_sched_rar_info_t rar_info);
