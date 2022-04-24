@@ -25,6 +25,13 @@
 #include "srsran/asn1/rrc_utils.h"
 #include "srsran/common/test_common.h"
 #include <iostream>
+#ifdef ENABLE_SLICER
+#include "srsran/asn1/s1ap_asn1.h"
+#endif
+#ifdef ENABLE_SLICER
+#include "srsran/asn1/liblte_common.h"
+#include "srsran/asn1/liblte_mme.h"
+#endif
 
 int test_erab_setup(srsran::log_sink_spy& spy, bool qci_exists)
 {
