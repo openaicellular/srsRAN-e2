@@ -389,7 +389,7 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
                  .data(),
              pdu->N_bytes);
 #ifdef ENABLE_SLICER
-      if (mac_ctrl->is_slicer_enabled()) {
+      if (mac_ctrl.is_slicer_enabled()) {
         // Decode NAS message security header type and protocol discriminator
         uint8_t  pd, msg_type, sec_hdr_type, msg_start;
         sec_hdr_type = (pdu->msg[0] & 0xF0) >> 4;
@@ -973,11 +973,12 @@ void rrc::ue::send_connection_reconf(srsran::unique_byte_buffer_t pdu,
   }
 
   #ifdef ENABLE_SLICER
+  // conn_reconf is replaced by recfg_r8
   // srsran::console("[slicer rrc] [RNTI: 0x%x] size of ded_info_nas_list: %u\n",
   //                 rnti, conn_reconf->ded_info_nas_list.size());
-  if (mac_ctrl.is_slicer_enabled() && conn_reconf->ded_info_nas_list_present) {
-    for (auto it = conn_reconf->ded_info_nas_list.begin();
-         it != conn_reconf->ded_info_nas_list.end(); ++it) {
+  if (mac_ctrl.is_slicer_enabled() && recfg_r8.ded_info_nas_list_present) {
+    for (auto it = recfg_r8.ded_info_nas_list.begin();
+         it != recfg_r8.ded_info_nas_list.end(); ++it) {
       // srsran::console("[slicer rrc] [RNTI: 0x%x] size of ded_info_nas pdu: %u\n", rnti, it->size());
       uint8_t  pd, msg_type, sec_hdr_type, msg_start;
       sec_hdr_type = (it->data()[0] & 0xF0) >> 4;
