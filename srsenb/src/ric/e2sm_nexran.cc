@@ -1,9 +1,9 @@
 
 #include <sys/time.h>
 
-#include "srslte/interfaces/enb_metrics_interface.h"
+#include "srsenb/interfaces/enb_metrics_interface.h"
 #include "srsenb/hdr/stack/rrc/rrc_metrics.h"
-#include "srsenb/hdr/stack/upper/common_enb.h"
+#include "srsenb/hdr/common/common_enb.h"
 #include "srsenb/hdr/ric/e2ap.h"
 #include "srsenb/hdr/ric/e2sm.h"
 #include "srsenb/hdr/ric/agent.h"
