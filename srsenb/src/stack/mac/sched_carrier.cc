@@ -351,7 +351,12 @@ void sched::carrier_sched::reset()
   bc_sched_ptr.reset();
 }
 
+#ifdef ENABLE_SLICER
+void sched::carrier_sched::carrier_cfg(const sched_cell_params_t& cell_params_, bool workshare)
+#else
 void sched::carrier_sched::carrier_cfg(const sched_cell_params_t& cell_params_)
+#endif
+//void sched::carrier_sched::carrier_cfg(const sched_cell_params_t& cell_params_)
 {
   // carrier_sched is now fully set
   cc_cfg = &cell_params_;
