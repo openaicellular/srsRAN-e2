@@ -367,7 +367,7 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
       srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionReestComplete...\n", rnti);
       srsran::console("[slicer rrc] [RNTI: 0x%x] updating old RNTI: 0x%x with new RNTI: 0x%x\n",
                       rnti, old_reest_rnti, rnti);
-      mac_ctrl->rnti_update(old_reest_rnti, rnti);
+      mac_ctrl.rnti_update(old_reest_rnti, rnti);
 #endif
       handle_rrc_con_reest_complete(&ul_dcch_msg.msg.c1().rrc_conn_reest_complete(), std::move(pdu));
       set_activity_timeout(UE_INACTIVITY_TIMEOUT);
@@ -430,7 +430,7 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
                 srsran::console("[slicer rrc] [RNTI: 0x%x] ULInformationTransfer...\n", rnti);
                 srsran::console("[slicer rrc] [RNTI: 0x%x] identity response with IMSI...\n", rnti);
                 srsran::console("[slicer rrc] [RNTI: 0x%x] captured IMSI: %015" PRIu64 "\n", rnti, imsi);
-                mac_ctrl->imsi_capture(imsi, rnti);
+                mac_ctrl.imsi_capture(imsi, rnti);
               }
             }
           }
@@ -453,13 +453,13 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
                 }
                 srsran::console("[slicer rrc] [RNTI: 0x%x] attach request with IMSI...\n", rnti);
                 srsran::console("[slicer rrc] [RNTI: 0x%x] captured IMSI: %015" PRIu64 "\n", rnti, imsi);
-                mac_ctrl->imsi_capture(imsi, rnti);
+                mac_ctrl.imsi_capture(imsi, rnti);
                 // parent->slicer.upd_member_crnti(imsi, rnti);
               }
               else if (eps_mobile_id.type_of_id == LIBLTE_MME_EPS_MOBILE_ID_TYPE_GUTI) {
                 srsran::console("[slicer rrc] [RNTI: 0x%x] attach request with TMSI...\n", rnti);
                 srsran::console("[slicer rrc] [RNTI: 0x%x] captured TMSI: %u\n", rnti, eps_mobile_id.guti.m_tmsi);
-                mac_ctrl->tmsi_capture(eps_mobile_id.guti.m_tmsi, rnti);
+                mac_ctrl.tmsi_capture(eps_mobile_id.guti.m_tmsi, rnti);
               }
             }
           }
@@ -562,10 +562,10 @@ void rrc::ue::handle_rrc_con_req(rrc_conn_request_s* msg)
     has_tmsi = true;
 
 #ifdef ENABLE_SLICER
-    if (mac_ctrl->is_slicer_enabled()) {
+    if (mac_ctrl.is_slicer_enabled()) {
       srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionRequest with TMSI...\n", rnti);
       srsran::console("[slicer rrc] [RNTI: 0x%x] captured TMSI: %u\n", rnti, m_tmsi);
-      mac_ctrl->tmsi_capture(m_tmsi, rnti);
+      mac_ctrl.tmsi_capture(m_tmsi, rnti);
     }
 #endif  
 
@@ -975,7 +975,7 @@ void rrc::ue::send_connection_reconf(srsran::unique_byte_buffer_t pdu,
   #ifdef ENABLE_SLICER
   // srsran::console("[slicer rrc] [RNTI: 0x%x] size of ded_info_nas_list: %u\n",
   //                 rnti, conn_reconf->ded_info_nas_list.size());
-  if (mac_ctrl->is_slicer_enabled() && conn_reconf->ded_info_nas_list_present) {
+  if (mac_ctrl.is_slicer_enabled() && conn_reconf->ded_info_nas_list_present) {
     for (auto it = conn_reconf->ded_info_nas_list.begin();
          it != conn_reconf->ded_info_nas_list.end(); ++it) {
       // srsran::console("[slicer rrc] [RNTI: 0x%x] size of ded_info_nas pdu: %u\n", rnti, it->size());
@@ -1014,7 +1014,7 @@ void rrc::ue::send_connection_reconf(srsran::unique_byte_buffer_t pdu,
               srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionReconfiguration w/ AttachAccept+GUTI...\n", rnti);
               srsran::console("[slicer rrc] [RNTI: 0x%x] captured updated TMSI: %u\n",
                               rnti, attach_accept.guti.guti.m_tmsi);
-              mac_ctrl->tmsi_capture(attach_accept.guti.guti.m_tmsi, rnti);
+              mac_ctrl.tmsi_capture(attach_accept.guti.guti.m_tmsi, rnti);
             }
           }
         }
