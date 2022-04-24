@@ -1,7 +1,7 @@
 
 #include <sys/time.h>
 
-#include "srsenb/interfaces/enb_metrics_interface.h"
+#include "srsran/interfaces/enb_metrics_interface.h"
 #include "srsenb/hdr/stack/rrc/rrc_metrics.h"
 #include "srsenb/hdr/common/common_enb.h"
 #include "srsenb/hdr/ric/e2ap.h"

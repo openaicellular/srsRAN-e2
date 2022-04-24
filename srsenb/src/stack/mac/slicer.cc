@@ -17,7 +17,7 @@ void slicer::init(const srsenb::slicer_args_t& args_)
   if (!args_.test_agent_interface && !args_.slice_db_filename.empty()) {
     if (!read_slice_db_file(args_.slice_db_filename)) {
       srsran::console("[slicer] Couldn't read slice_db file: %s\n", args_.slice_db_filename.c_str());
-      exit(SRSLTE_ERROR);
+      exit(SRSRAN_ERROR);
     }
   }
 
@@ -274,7 +274,7 @@ bool slicer::read_slice_db_file(std::string db_filename)
       if (ret != 0) {
         srsran::console("[slicer] failed to add slice %s, check file format\n", s.config.name.c_str());
         m_db_file.close();
-        exit(SRSLTE_ERROR);
+        exit(SRSRAN_ERROR);
       }
     }
   }
