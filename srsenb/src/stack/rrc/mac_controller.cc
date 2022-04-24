@@ -343,22 +343,22 @@ void mac_controller::update_mac()
 }
 
 #ifdef ENABLE_SLICER
-bool rrc::ue::mac_controller::is_slicer_enabled()
+bool mac_controller::is_slicer_enabled()
 {
   return mac->is_slicer_enabled();
 }
 
-void rrc::ue::mac_controller::imsi_capture(uint64_t imsi, uint16_t rnti)
+void mac_controller::imsi_capture(uint64_t imsi, uint16_t rnti)
 {
   mac->handle_imsi_capture(imsi, rnti);
 }
 
-void rrc::ue::mac_controller::tmsi_capture(uint32_t tmsi, uint16_t rnti)
+void mac_controller::tmsi_capture(uint32_t tmsi, uint16_t rnti)
 {
   mac->handle_tmsi_capture(tmsi, rnti);
 }
 
-void rrc::ue::mac_controller::rnti_update(uint16_t old_rnti, uint16_t new_rnti)
+void mac_controller::rnti_update(uint16_t old_rnti, uint16_t new_rnti)
 {
   mac->handle_rnti_update(old_rnti, new_rnti);
 }
