@@ -196,6 +196,9 @@ private:
   uint32_t                                     rlf_cnt              = 0;
   uint8_t                                      transaction_id       = 0;
   rrc_state_t                                  state                = RRC_STATE_IDLE;
+  #ifdef ENABLE_SLICER
+    uint16_t                                     old_reest_rnti       = 0;
+  #endif
   std::map<uint16_t, srsran::pdcp_lte_state_t> old_reest_pdcp_state = {};
   bool                                         rlf_info_pending     = false;
 

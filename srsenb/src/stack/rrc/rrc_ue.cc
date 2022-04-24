@@ -364,12 +364,10 @@ void rrc::ue::parse_ul_dcch(uint32_t lcid, srsran::unique_byte_buffer_t pdu)
     case ul_dcch_msg_type_c::c1_c_::types::rrc_conn_reest_complete:
       save_ul_message(std::move(original_pdu));
 #ifdef ENABLE_SLICER
-      const rrc_conn_reest_request_r8_ies_s& req_r8   = msg->crit_exts.rrc_conn_reest_request_r8();
-      uint16_t old_rnti = req_r8.ue_id.c_rnti.to_number();
       srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionReestComplete...\n", rnti);
       srsran::console("[slicer rrc] [RNTI: 0x%x] updating old RNTI: 0x%x with new RNTI: 0x%x\n",
-                      rnti, old_rnti, rnti);
-      mac_ctrl->rnti_update(old_rnti, rnti);
+                      rnti, old_reest_rnti, rnti);
+      mac_ctrl->rnti_update(old_reest_rnti, rnti);
 #endif
       handle_rrc_con_reest_complete(&ul_dcch_msg.msg.c1().rrc_conn_reest_complete(), std::move(pdu));
       set_activity_timeout(UE_INACTIVITY_TIMEOUT);
@@ -818,6 +816,10 @@ void rrc::ue::handle_rrc_con_reest_req(rrc_conn_reest_request_s* msg)
     eutra_capabilities.to_json(js);
     parent->logger.debug("rnti=0x%x EUTRA capabilities: %s", rnti, js.to_string().c_str());
   }
+  #ifdef ENABLE_SLICER
+  old_reest_rnti = old_rnti;
+  #endif
+
   if (endc_handler) {
     if (req_r8.reest_cause.value == reest_cause_opts::recfg_fail) {
       // In case of Reestablishment due to ReconfFailure, avoid re-enabling NR EN-DC, otherwise
