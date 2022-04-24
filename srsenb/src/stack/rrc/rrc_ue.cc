@@ -989,7 +989,7 @@ void rrc::ue::send_connection_reconf(srsran::unique_byte_buffer_t pdu,
           pd == LIBLTE_MME_PD_EPS_MOBILITY_MANAGEMENT) {
         msg_start = 7; // start at msg_type
         uint8* msg_ptr = &it->data()[msg_start];
-        parent->rrc_log->debug_hex((const uint8*) it->data(), it->size(), "[slicer rrc] reconf pdu");
+        //parent->rrc_log->debug_hex((const uint8*) it->data(), it->size(), "[slicer rrc] reconf pdu");
         msg_type = *msg_ptr;
         msg_ptr++;
         // srsran::console("[slicer rrc] [RNTI: 0x%x] integrity protected msg_type: 0x%x pd: 0x%x\n",
