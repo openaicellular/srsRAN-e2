@@ -65,6 +65,14 @@ public:
   std::string get_type() final;
   bool        get_metrics(srsenb::stack_metrics_t* metrics) final;
 
+#ifdef ENABLE_SLICER
+  bool slice_config(std::vector<slicer::slice_config_t> slice_configs) final;
+  bool slice_delete(std::vector<std::string> slice_names) final;
+  std::vector<slicer::slice_status_t> slice_status(std::vector<std::string> slice_names) final;
+  bool slice_ue_bind(std::string slice_name, std::vector<uint64_t> imsi_list) final;
+  bool slice_ue_unbind(std::string slice_name, std::vector<uint64_t> imsi_list) final;
+#endif
+
   // GW srsue stack_interface_gw dummy interface
   bool is_registered() override { return true; };
   bool start_service_request() override { return true; };
