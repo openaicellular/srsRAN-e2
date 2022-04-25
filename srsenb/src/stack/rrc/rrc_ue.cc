@@ -653,6 +653,62 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
 
   pdu->N_bytes = msg_r8->ded_info_nas.size();
   memcpy(pdu->msg, msg_r8->ded_info_nas.data(), pdu->N_bytes);
+  
+#ifdef ENABLE_SLICER
+  if (mac_ctrl.is_slicer_enabled()) {
+    // Decode NAS message security header type and protocol discriminator
+    uint8_t  pd, msg_type, sec_hdr_type, msg_start;
+    sec_hdr_type = (pdu->msg[0] & 0xF0) >> 4;
+    pd = pdu->msg[0] & 0x0F;
+    // srslte::console("sec_hdr_type: %i\n", sec_hdr_type);
+    // srslte::console("pd: %i\n", pd);
+
+    if (sec_hdr_type == LIBLTE_MME_SECURITY_HDR_TYPE_PLAIN_NAS ||
+        sec_hdr_type == LIBLTE_MME_SECURITY_HDR_TYPE_INTEGRITY) {
+
+      if (sec_hdr_type == LIBLTE_MME_SECURITY_HDR_TYPE_PLAIN_NAS) {
+        msg_start = 1;
+        msg_type = pdu->msg[msg_start];
+        // srslte::console("[slicer rrc] [RNTI: 0x%x] plain nas msg_type: 0x%x pd: 0x%x\n", rnti, msg_type, pd);
+      } else {
+        pd = pdu->msg[6] & 0x0F;
+        msg_start = 7;
+        msg_type = pdu->msg[msg_start];
+        // srslte::console("[slicer rrc] [RNTI: 0x%x] integrity protected msg_type: 0x%x pd: 0x%x\n", rnti, msg_type, pd);
+      }
+
+      if (msg_type == LIBLTE_MME_MSG_TYPE_ATTACH_REQUEST) {
+        // extract IMSI
+        LIBLTE_MME_EPS_MOBILE_ID_STRUCT eps_mobile_id;
+        // LIBLTE_MME_ATTACH_REQUEST_MSG_STRUCT attach_req = {};
+        uint64_t imsi = 0;
+        uint8* msg_ptr = &pdu->msg[msg_start + 2]; // eps mobile id starts here
+        LIBLTE_ERROR_ENUM err = liblte_mme_unpack_eps_mobile_id_ie(&msg_ptr, &eps_mobile_id);
+        if (err != LIBLTE_SUCCESS) {
+          srsran::console("[slicer rrc] error unpacking attach request. error: %s\n", liblte_error_text[err]);
+        } else {
+          // parent->rrc_log->debug_hex((const uint8*) &eps_mobile_id, sizeof(eps_mobile_id), "eps_mobile_id");
+          // srslte::console("[slicer rrc] id type: %i\n", eps_mobile_id.type_of_id);
+          srsran::console("[slicer rrc] [RNTI: 0x%x] RRCConnectionSetupComplete...\n", rnti);
+          if (eps_mobile_id.type_of_id == LIBLTE_MME_EPS_MOBILE_ID_TYPE_IMSI) {
+            for (int i = 0; i <= 14; i++) {
+              imsi += eps_mobile_id.imsi[i] * std::pow(10, 14 - i);
+            }
+            srsran::console("[slicer rrc] [RNTI: 0x%x] attach request with IMSI...\n", rnti);
+            srsran::console("[slicer rrc] [RNTI: 0x%x] captured IMSI: %015" PRIu64 "\n", rnti, imsi);
+            mac_ctrl.imsi_capture(imsi, rnti);
+            // parent->slicer.upd_member_crnti(imsi, rnti);
+          }
+          else if (eps_mobile_id.type_of_id == LIBLTE_MME_EPS_MOBILE_ID_TYPE_GUTI) {
+            srsran::console("[slicer rrc] [RNTI: 0x%x] attach request with TMSI...\n", rnti);
+            srsran::console("[slicer rrc] [RNTI: 0x%x] captured TMSI: %u\n", rnti, eps_mobile_id.guti.m_tmsi);
+            mac_ctrl.tmsi_capture(eps_mobile_id.guti.m_tmsi, rnti);
+          }
+        }
+      }
+    }
+  }
+#endif
 
   // Signal MAC scheduler that configuration was successful
   mac_ctrl.handle_con_setup_complete();
