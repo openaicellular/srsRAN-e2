@@ -26,7 +26,7 @@
 #include "srsran/common/test_common.h"
 #include <iostream>
 #ifdef ENABLE_SLICER
-#include "srsran/asn1/s1ap_asn1.h"
+#include "srsran/asn1/s1ap.h"
 #endif
 #ifdef ENABLE_SLICER
 #include "srsran/asn1/liblte_common.h"
