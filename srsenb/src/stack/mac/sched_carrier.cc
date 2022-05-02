@@ -368,7 +368,7 @@ void sched::carrier_sched::carrier_cfg(const sched_cell_params_t& cell_params_)
   // Setup data scheduling algorithms
   if (cell_params_.sched_cfg->sched_policy == "time_rr") {
     #ifdef ENABLE_SLICER
-    sched_algo.reset(new sched_time_rr{*cc_cfg, *cell_params_.sched_cfg, workshare});
+    sched_algo.reset(new sched_time_rr_sliced{*cc_cfg, *cell_params_.sched_cfg, workshare});
     #else
     sched_algo.reset(new sched_time_rr{*cc_cfg, *cell_params_.sched_cfg});
     #endif
