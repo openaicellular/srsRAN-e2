@@ -22,7 +22,11 @@
 #include "srsenb/hdr/stack/mac/sched_carrier.h"
 #include "srsenb/hdr/stack/mac/sched_helpers.h"
 #include "srsenb/hdr/stack/mac/schedulers/sched_time_pf.h"
+#ifdef ENABLE_SLICER
+#include "srsenb/hdr/stack/mac/schedulers/sched_time_rr_sliced.h"
+#else
 #include "srsenb/hdr/stack/mac/schedulers/sched_time_rr.h"
+#endif
 #include "srsran/common/standard_streams.h"
 #include "srsran/common/string_helpers.h"
 #include "srsran/interfaces/enb_rrc_interfaces.h"
