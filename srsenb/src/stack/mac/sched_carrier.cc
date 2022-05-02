@@ -367,7 +367,11 @@ void sched::carrier_sched::carrier_cfg(const sched_cell_params_t& cell_params_)
 
   // Setup data scheduling algorithms
   if (cell_params_.sched_cfg->sched_policy == "time_rr") {
+    #ifdef ENABLE_SLICER
+    sched_algo.reset(new sched_time_rr{*cc_cfg, *cell_params_.sched_cfg, workshare});
+    #else
     sched_algo.reset(new sched_time_rr{*cc_cfg, *cell_params_.sched_cfg});
+    #endif
     logger.info("Using time-domain RR scheduling policy for cc=%d", cc_cfg->enb_cc_idx);
   } else {
     sched_algo.reset(new sched_time_pf{*cc_cfg, *cell_params_.sched_cfg});
