@@ -24,6 +24,7 @@
 
 #include "sched_base.h"
 #include "srsenb/hdr/stack/mac/slicer_defs.h"
+#include "srsran/common/standard_streams.h"
 
 namespace srsenb {
 
