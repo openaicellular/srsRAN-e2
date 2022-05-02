@@ -17,6 +17,9 @@
 # the LICENSE file in the top-level directory of this distribution
 # and at http://www.gnu.org/licenses/.
 #
-
-set(SOURCES sched_base.cc sched_time_rr.cc sched_time_pf.cc)
+if(ENABLE_SLICER)
+    set(SOURCES sched_base.cc sched_time_rr_sliced.cc sched_time_pf.cc)
+else()
+    set(SOURCES sched_base.cc sched_time_rr.cc sched_time_pf.cc)
+endif()
 add_library(mac_schedulers OBJECT ${SOURCES})
