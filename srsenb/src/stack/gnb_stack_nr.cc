@@ -217,4 +217,32 @@ void gnb_stack_nr::rach_detected(const rach_info_t& rach_info)
   mac.rach_detected(rach_info);
 }
 
+#ifdef ENABLE_SLICER
+// gNodeB slicer interface
+bool gnb_stack_nr::slice_config(std::vector<slicer::slice_config_t> slice_configs)
+{
+  return false;
+}
+
+bool gnb_stack_nr::slice_delete(std::vector<std::string> slice_names)
+{
+  return false;
+}
+
+std::vector<slicer::slice_status_t> gnb_stack_nr::slice_status(std::vector<std::string> slice_names)
+{
+  return NULL;
+}
+
+bool gnb_stack_nr::slice_ue_bind(std::string slice_name, std::vector<uint64_t> imsi_list)
+{
+  return false;
+}
+
+bool gnb_stack_nr::slice_ue_unbind(std::string slice_name, std::vector<uint64_t> imsi_list)
+{
+  return false;
+}
+#endif
+
 } // namespace srsenb
