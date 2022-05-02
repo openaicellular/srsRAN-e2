@@ -231,7 +231,7 @@ bool gnb_stack_nr::slice_delete(std::vector<std::string> slice_names)
 
 std::vector<slicer::slice_status_t> gnb_stack_nr::slice_status(std::vector<std::string> slice_names)
 {
-  return 0;
+  return std::vector<slicer::slice_status_t>();
 }
 
 bool gnb_stack_nr::slice_ue_bind(std::string slice_name, std::vector<uint64_t> imsi_list)
