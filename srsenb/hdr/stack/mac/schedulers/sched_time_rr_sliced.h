@@ -23,6 +23,7 @@
 #define SRSENB_SCHEDULER_METRIC_SLICED_H
 
 #include "sched_base.h"
+#include "srsenb/hdr/stack/mac/slicer_defs.h"
 
 namespace srsenb {
 
@@ -31,7 +32,7 @@ class sched_time_rr_sliced final : public sched_base
   const static int MAX_RBG = 25;
 
 public:
-  sched_time_rr_sliced(const sched_cell_params_t& cell_params_, const sched_interface::sched_args_t& sched_args, bool workshare_) : workshare(workshare_);
+  sched_time_rr_sliced(const sched_cell_params_t& cell_params_, const sched_interface::sched_args_t& sched_args, bool workshare_);
   void sched_dl_users(sched_ue_list& ue_db, sf_sched* tti_sched) override;
   void sched_ul_users(sched_ue_list& ue_db, sf_sched* tti_sched) override;
 
