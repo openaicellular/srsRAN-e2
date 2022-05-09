@@ -361,15 +361,10 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
           }
       if (try_dl_newtx_alloc_greedy(*tti_sched, user, *h) == alloc_result::no_cch_space) {
         logger.info("SCHED: Couldn't find space in PDCCH/PUCCH for DL tx for rnti=0x%x", user.get_rnti());
-          }
-        }
+        }  
       }
     }
   }
-  
-
-
-
 }
 
 /*****************************************************************
