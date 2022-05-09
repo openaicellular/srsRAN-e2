@@ -45,7 +45,7 @@ void sched_time_rr_sliced::sched_dl_users(sched_ue_list& ue_db, sf_sched* tti_sc
   auto iter = ue_db.begin();
   for (uint32_t ue_count = 0; ue_count < ue_db.size(); ++iter, ++ue_count) {
     // srslte::console("rnti: 0x%x  slice_status: %u\n", iter->second.get_rnti(), iter->second.get_slice_status());
-    switch (iter->second.get_slice_status()) {
+    switch (*iter->second.get_slice_status()) {
       case IN_CUR_SLICE:
         cur_slice_rntis.push_back(iter->first);
         break;
@@ -56,11 +56,13 @@ void sched_time_rr_sliced::sched_dl_users(sched_ue_list& ue_db, sf_sched* tti_sc
         no_slice_rntis.push_back(iter->first);
         break;
     }
+  }
 
   // give priority in a time-domain RR basis.
   uint32_t priority_idx = tti_sched->get_tti_tx_dl().to_uint() % (uint32_t)ue_db.size();
   sched_dl_retxs(ue_db, tti_sched, priority_idx);
   sched_dl_newtxs(ue_db, tti_sched, priority_idx);
+
 }
 
 void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sched, size_t prio_idx)
