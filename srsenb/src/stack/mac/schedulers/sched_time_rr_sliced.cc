@@ -45,15 +45,16 @@ void sched_time_rr_sliced::sched_dl_users(sched_ue_list& ue_db, sf_sched* tti_sc
   auto iter = ue_db.begin();
   for (uint32_t ue_count = 0; ue_count < ue_db.size(); ++iter, ++ue_count) {
     // srslte::console("rnti: 0x%x  slice_status: %u\n", iter->second.get_rnti(), iter->second.get_slice_status());
-    switch (*iter->second.get_slice_status()) {
+    sched_ue&           user = *iter->second;
+    switch (user.get_slice_status()) {
       case IN_CUR_SLICE:
-        cur_slice_rntis.push_back(iter->first);
+        cur_slice_rntis.push_back(user.get_rnti());
         break;
       case IN_OTHER_SLICE:
-        other_slice_rntis.push_back(iter->first);
+        other_slice_rntis.push_back(user.get_rnti());
         break;
       case IN_NO_SLICE:
-        no_slice_rntis.push_back(iter->first);
+        no_slice_rntis.push_back(user.get_rnti());
         break;
     }
   }
