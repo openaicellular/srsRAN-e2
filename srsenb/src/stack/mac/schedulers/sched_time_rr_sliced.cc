@@ -101,7 +101,7 @@ void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sc
       //  sched_ue* user = &ue_db[*it];
       //  srslte::console("scheduling other UE crnti 0x%x\n", user->get_rnti());
       //  allocate_user(user);
-      sched_ue&           user = *it->second;
+      sched_ue&           user = *ue_db[*it];//*it->second; //*ue_db[ue.rnti]
       const dl_harq_proc* h    = get_dl_retx_harq(user, tti_sched);
       // Check if there is a pending retx
       if (h == nullptr) {
