@@ -124,7 +124,7 @@ void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sc
         //sched_ue* user = &ue_db[*it];
         //allocate_user(user);
       
-      sched_ue&           user = *it->second;
+      sched_ue&           user = *ue_db[*it];
       const dl_harq_proc* h    = get_dl_retx_harq(user, tti_sched);
       // Check if there is a pending retx
       if (h == nullptr) {
@@ -146,7 +146,7 @@ void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sc
       //sched_ue* user = &ue_db[*it];
       // srslte::console("scheduling current slice crnti 0x%x\n", user->get_rnti());
       //allocate_user(user);
-      sched_ue&           user = *it->second;
+      sched_ue&           user = *ue_db[*it];
       const dl_harq_proc* h    = get_dl_retx_harq(user, tti_sched);
       // Check if there is a pending retx
       if (h == nullptr) {
@@ -169,7 +169,7 @@ void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sc
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-      sched_ue&           user = *it->second;
+      sched_ue&           user = *ue_db[*it];
       const dl_harq_proc* h    = get_dl_retx_harq(user, tti_sched);
       // Check if there is a pending retx
       if (h == nullptr) {
@@ -190,7 +190,7 @@ void sched_time_rr_sliced::sched_dl_retxs(sched_ue_list& ue_db, sf_sched* tti_sc
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-        sched_ue&           user = *it->second;
+        sched_ue&           user = *ue_db[*it];
         const dl_harq_proc* h    = get_dl_retx_harq(user, tti_sched);
         // Check if there is a pending retx
         if (h == nullptr) {
@@ -243,7 +243,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
       //  sched_ue* user = &ue_db[*it];
       //  srslte::console("scheduling other UE crnti 0x%x\n", user->get_rnti());
       //  allocate_user(user);
-      sched_ue& user = *it->second;
+      sched_ue& user = *ue_db[*it];
       if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
         continue;
         }
@@ -271,7 +271,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
         //sched_ue* user = &ue_db[*it];
         //allocate_user(user);
       
-      sched_ue& user = *it->second;
+      sched_ue& user = *ue_db[*it];
       if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
         continue;
         }
@@ -298,7 +298,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
       //sched_ue* user = &ue_db[*it];
       // srslte::console("scheduling current slice crnti 0x%x\n", user->get_rnti());
       //allocate_user(user);
-      sched_ue& user = *it->second;
+      sched_ue& user = *ue_db[*it];
       if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
         continue;
         }
@@ -326,7 +326,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-          sched_ue& user = *it->second;
+          sched_ue& user = *ue_db[*it];
           if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
           continue;
           }
@@ -351,7 +351,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-        sched_ue& user = *it->second;
+        sched_ue& user = *ue_db[*it];
         if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
           continue;
             }
