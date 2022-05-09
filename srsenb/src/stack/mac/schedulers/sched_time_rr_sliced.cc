@@ -325,10 +325,10 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-      sched_ue& user = *it->second;
-      if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
-        continue;
-        }
+          sched_ue& user = *it->second;
+          if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
+          continue;
+          }
       const dl_harq_proc* h = get_dl_newtx_harq(user, tti_sched);
       // Check if there is an empty harq for the newtx
       if (h == nullptr) {
@@ -338,7 +338,7 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
         logger.info("SCHED: Couldn't find space in PDCCH/PUCCH for DL tx for rnti=0x%x", user.get_rnti());
         }
       }
-
+      }
       if (!no_slice_rntis.empty()) {
         uint32_t priority_idx = tti_sched->get_tti_tx_dl().to_uint() % (uint32_t)no_slice_rntis.size();
         auto it = no_slice_rntis.begin();
@@ -350,23 +350,23 @@ void sched_time_rr_sliced::sched_dl_newtxs(sched_ue_list& ue_db, sf_sched* tti_s
           }
           //sched_ue* user = &ue_db[*it];
           //allocate_user(user);
-      sched_ue& user = *it->second;
-      if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
-        continue;
+        sched_ue& user = *it->second;
+        if (user.enb_to_ue_cc_idx(cc_cfg->enb_cc_idx) < 0) {
+          continue;
+            }
+        const dl_harq_proc* h = get_dl_newtx_harq(user, tti_sched);
+        // Check if there is an empty harq for the newtx
+        if (h == nullptr) {
+          continue;
           }
-      const dl_harq_proc* h = get_dl_newtx_harq(user, tti_sched);
-      // Check if there is an empty harq for the newtx
-      if (h == nullptr) {
-        continue;
-          }
-      if (try_dl_newtx_alloc_greedy(*tti_sched, user, *h) == alloc_result::no_cch_space) {
-        logger.info("SCHED: Couldn't find space in PDCCH/PUCCH for DL tx for rnti=0x%x", user.get_rnti());
-        }  
+        if (try_dl_newtx_alloc_greedy(*tti_sched, user, *h) == alloc_result::no_cch_space) {
+          logger.info("SCHED: Couldn't find space in PDCCH/PUCCH for DL tx for rnti=0x%x", user.get_rnti());
+            }  
+        }
       }
     }
   }
 }
-
 /*****************************************************************
  *                         Uplink
  *****************************************************************/
