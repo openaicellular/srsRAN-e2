@@ -1,0 +1,266 @@
+options:
+  parameters:
+    author: ''
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: top_block
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 36]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: blocks_add_xx_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '4'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 88.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_rep_sink_0
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://*:2100
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 68.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_rep_sink_1
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://*:2010
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 300.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_rep_sink_1_0
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://*:2110
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 412.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_rep_sink_1_0_0
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://*:3000
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 516.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_rep_sink_2
+  id: zeromq_rep_sink
+  parameters:
+    address: tcp://*:2000
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 204.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_req_source_0
+  id: zeromq_req_source
+  parameters:
+    address: tcp://localhost:2011
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 132.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_req_source_0_0
+  id: zeromq_req_source
+  parameters:
+    address: tcp://localhost:2111
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 244.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_req_source_0_0_0
+  id: zeromq_req_source
+  parameters:
+    address: tcp://localhost:3001
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 364.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_req_source_1
+  id: zeromq_req_source
+  parameters:
+    address: tcp://localhost:2001
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 44.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_req_source_3
+  id: zeromq_req_source
+  parameters:
+    address: tcp://localhost:2101
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [792, 348.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_add_xx_0, '0', zeromq_rep_sink_0, '0']
+- [zeromq_req_source_0, '0', blocks_add_xx_0, '1']
+- [zeromq_req_source_0_0, '0', blocks_add_xx_0, '2']
+- [zeromq_req_source_0_0_0, '0', blocks_add_xx_0, '3']
+- [zeromq_req_source_1, '0', blocks_add_xx_0, '0']
+- [zeromq_req_source_3, '0', zeromq_rep_sink_1, '0']
+- [zeromq_req_source_3, '0', zeromq_rep_sink_1_0, '0']
+- [zeromq_req_source_3, '0', zeromq_rep_sink_1_0_0, '0']
+- [zeromq_req_source_3, '0', zeromq_rep_sink_2, '0']
+
+metadata:
+  file_format: 1
