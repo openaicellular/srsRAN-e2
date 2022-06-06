@@ -62,10 +62,11 @@ kpm_model::metrics::metrics(srsenb::enb_metrics_t *em)
     if (em->stack.rrc.ues[i].state == srsenb::RRC_STATE_REGISTERED)
       ++active_ue_count;
   }
-  for (uint16_t i = 0; i < em->stack.pdcp_kpm.n_ues && i < SRSENB_MAX_UES; ++i) {
+  // Changed stack-> to nr_stack->
+  for (uint16_t i = 0; i < em->nr_stack.pdcp_kpm.n_ues && i < SRSENB_MAX_UES; ++i) { 
     for (int j = 0; j < MAX_NOF_QCI; ++j) {
-      dl_bytes_by_qci[j] += em->stack.pdcp_kpm.ues[i].dl_bytes_by_qci[j];
-      ul_bytes_by_qci[j] += em->stack.pdcp_kpm.ues[i].ul_bytes_by_qci[j];
+      dl_bytes_by_qci[j] += em->nr_stack.pdcp_kpm.ues[i].dl_bytes_by_qci[j];
+      ul_bytes_by_qci[j] += em->nr_stack.pdcp_kpm.ues[i].ul_bytes_by_qci[j];
       if (!have_bytes && (dl_bytes_by_qci[j] > 0 || ul_bytes_by_qci[j] > 0))
 	have_bytes = true;
     }

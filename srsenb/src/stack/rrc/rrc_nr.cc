@@ -426,6 +426,9 @@ void rrc_nr::get_metrics(srsenb::rrc_metrics_t& m)
     for (auto& ue : users) {
       rrc_ue_metrics_t ue_metrics;
       ue.second->get_metrics(ue_metrics);
+      #ifdef ENABLE_RIC_AGENT_KPM
+      ue_metrics.rnti = ue.second->get_eutra_rnti(); // Recording RNTI as a PDCP metric.
+      #endif
       m.ues.push_back(ue_metrics);
     }
   }

@@ -174,6 +174,10 @@ bool gnb_stack_nr::get_metrics(srsenb::stack_metrics_t* metrics)
 
   // obtain MAC metrics (do not use stack thread)
   mac.get_metrics(metrics->mac);
+  #ifdef ENABLE_RIC_AGENT_KPM
+    //pdcp.get_metrics(metrics.pdcp);
+    pdcp.get_metrics_kpm(metrics->pdcp_kpm); // Get Pdcp metrics.
+  #endif
 
   // wait for RRC result
   std::unique_lock<std::mutex> lock(metrics_mutex);
