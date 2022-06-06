@@ -52,6 +52,9 @@ struct pdcp_metrics_t {
 };
 
 
+//#ifdef ENABLE_RIC_AGENT_KPM
+//  pdcp_metrics_kpm_t pdcp_kpm;
+//#endif
 
 struct stack_metrics_t {
   mac_metrics_t  mac;
