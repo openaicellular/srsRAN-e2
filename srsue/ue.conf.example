@@ -40,8 +40,8 @@ tx_gain = 80
 #continuous_tx     = auto
 
 # Example for ZMQ-based operation with TCP transport for I/Q samples
-#device_name = zmq
-#device_args = tx_port=tcp://*:2001,rx_port=tcp://localhost:2000,id=ue,base_srate=23.04e6
+device_name = zmq
+device_args = tx_port0=tcp://*:2001,rx_port0=tcp://localhost:2000,tx_port1=tcp://*:2101,rx_port1=tcp://localhost:2100,id=ue,base_srate=23.04e6
 
 #####################################################################
 # EUTRA RAT configuration
@@ -65,8 +65,8 @@ dl_earfcn = 3350
 # nof_carriers:    Number of NR carriers (must be at least 1 for NR support)
 #####################################################################
 [rat.nr]
-# bands = 78
-# nof_carriers = 0
+bands = 3,78
+nof_carriers = 1
 
 #####################################################################
 # Packet capture configuration
@@ -159,7 +159,7 @@ imei = 353490069873319
 #####################################################################
 [rrc]
 #ue_category       = 4
-#release           = 8
+release           = 15
 #feature_group     = 0xe6041000
 #mbms_service_id   = -1
 #mbms_service_port = 4321
@@ -194,7 +194,7 @@ imei = 353490069873319
 # ip_netmask:           Netmask of the tun_srsue device. Default: 255.255.255.0
 #####################################################################
 [gw]
-#netns =
+netns = ue1
 #ip_devname = tun_srsue
 #ip_netmask = 255.255.255.0
 
