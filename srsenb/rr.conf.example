@@ -111,8 +111,7 @@ cell_list =
   // Add here more cells
 );
 
-nr_cell_list =
-(
+
   nr_cell_list =
 (
    {
@@ -131,4 +130,4 @@ nr_cell_list =
     band = 3;
   }
 );
-);
+
