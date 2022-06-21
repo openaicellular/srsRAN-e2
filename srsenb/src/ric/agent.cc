@@ -478,7 +478,7 @@ int agent::connect()
    * in this thread since it's dedicated to the connection.  Later, we
    * need to be more careful.
    */
-  while (state == RIC_CONNECTED && !is_state_stale(10)) {
+  while (state == RIC_CONNECTED && !is_state_stale(30)) {
     RIC_DEBUG("waiting for E2setupResponse...\n");
     sleep(5);
   }
