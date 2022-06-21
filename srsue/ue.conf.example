@@ -194,9 +194,9 @@ release           = 15
 # ip_netmask:           Netmask of the tun_srsue device. Default: 255.255.255.0
 #####################################################################
 [gw]
-netns = ue1
-#ip_devname = tun_srsue
-#ip_netmask = 255.255.255.0
+# netns = ue1
+# ip_devname = tun_srsue
+# ip_netmask = 255.255.255.0
 
 #####################################################################
 # GUI configuration
