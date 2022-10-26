@@ -303,6 +303,10 @@ int rf_zmq_open_multi(char* args, void** h, uint32_t nof_channels)
       goto clean_exit;
     }
 
+
+    fprintf(stdout, "[zmq] %d -> NOF Channels\n", handler->nof_channels);
+    fprintf(stdout, "[zmq] %s -> Args \n", args);
+
     for (int i = 0; i < handler->nof_channels; i++) {
       // rx_port
       char rx_port[RF_PARAM_LEN] = {};
