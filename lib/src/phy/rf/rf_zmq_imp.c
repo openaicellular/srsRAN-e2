@@ -190,7 +190,7 @@ float rf_zmq_get_rssi(void* h)
 
 int rf_zmq_open(char* args, void** h)
 {
-  return rf_zmq_open_multi(args, h, 1);
+  return rf_zmq_open_multi(args, h, 2);
 }
 
 int rf_zmq_open_multi(char* args, void** h, uint32_t nof_channels)
