@@ -639,7 +639,7 @@ int main(int argc, char* argv[])
     }
   }
 #endif
-
+   printf("Attaching Logs...");
   // Start the log backend.
   srslog::init();
 
@@ -647,8 +647,10 @@ int main(int argc, char* argv[])
   srslog::fetch_basic_logger("POOL").set_level(srslog::basic_levels::debug);
   srsran::log_args(argc, argv, "ENB");
 
+  printf("Logs attached...");
+  printf("Scalling CPUs...");
   srsran::check_scaling_governor(args.rf.device_name);
-
+  printf("CPUs Scalled...");
   // Set up the JSON log channel used by metrics and events.
   srslog::sink& json_sink =
       srslog::fetch_file_sink(args.general.report_json_filename, 0, false, srslog::create_json_formatter());
@@ -663,10 +665,11 @@ int main(int argc, char* argv[])
     event_logger::configure(json_channel, format);
   }
 
+  printf("Locking all objects...");
   if (mlockall((uint32_t)MCL_CURRENT | (uint32_t)MCL_FUTURE) == -1) {
     srsran::console("Failed to `mlockall`: {}", errno);
   }
-
+  printf("Creating ENB...");
   // Create eNB
   unique_ptr<srsenb::enb> enb{new srsenb::enb(srslog::get_default_sink())};
   if (enb->init(args) != SRSRAN_SUCCESS) {
