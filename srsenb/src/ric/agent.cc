@@ -84,6 +84,8 @@ int agent::init(const srsenb::all_args_t& args_,
   ric.set_level(ric_level);
   ric.set_hex_dump_max_size(args.ric_agent.log_hex_limit);
   RIC_DEBUG("log_level = %s\n",args.ric_agent.log_level.c_str());
+
+  printf("ric addr: %s, ric port: %d", args.ric_agent.remote_ipv4_addr.c_str(), args.ric_agent.remote_port);
  
   srslog::basic_levels e2ap_level = srslog::str_to_basic_level(args.ric_agent.log_level);
   e2ap.set_level(e2ap_level);
@@ -450,7 +452,7 @@ int agent::connect()
   rx_sockets->add_socket_handler(ric_socket.fd(),srsran::make_sctp_sdu_handler(ric, agent_queue, ric_socket_handler)); // add_socket_sctp_pdu_handler renamed to add_socket_handler
 
   set_state(RIC_CONNECTED);
-  RIC_INFO("connected to RIC on %s",
+  RIC_ERROR("connected to RIC on %s",
 	   args.ric_agent.remote_ipv4_addr.c_str());
 
   /* Send an E2Setup request to RIC. */
