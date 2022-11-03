@@ -69,7 +69,9 @@ static inline int parse_string(char* args, const char* config_arg_base, int chan
 
   // try to parse parameter without index as is
   snprintf(config_key, RF_PARAM_LEN, "%s=", config_arg_base);
+  printf("[%s - config_key] %s\n", config_arg_base,  config_key);
   config_ptr = strstr(args, config_key);
+  printf("[%s - config ptr] %s\n", config_arg_base,  config_ptr);
 
   // check if we have a match
   if (!config_ptr) {

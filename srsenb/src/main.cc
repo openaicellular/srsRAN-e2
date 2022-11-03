@@ -294,7 +294,7 @@ void parse_args(all_args_t* args, int argc, char* argv[])
     ("ric.agent.local_port", bpo::value<uint16_t>(&args->ric_agent.local_port)->default_value(0), "Local port on which to bind the E2 agent.")
     ("ric.agent.no_reconnect", bpo::value<bool>(&args->ric_agent.no_reconnect)->default_value(false), "Don't reconnect on connection loss or error.")
     ("ric.agent.functions_disabled", bpo::value<string>(&args->ric_agent.functions_disabled)->default_value(""), "A comma-separated list of E2SM functions to disable in the RIC agent; by default, most are enabled.  To enable all, set this to the empty string.")
-    ("ric.agent.log_level", bpo::value<string>(&args->ric_agent.log_level),  "RIC agent log level")
+    ("ric.agent.log_level", bpo::value<string>(&args->ric_agent.log_level)->default_value("info"),  "RIC agent log level")
     ("ric.agent.log_hex_limit",bpo::value<int>(&args->ric_agent.log_hex_limit), "RIC agent log hex dump limit") // needs checking
 #endif
     ;
@@ -620,7 +620,7 @@ int main(int argc, char* argv[])
 
   srsran_debug_handle_crash(argc, argv);
   parse_args(&args, argc, argv);
-
+  printf("parsed all the args");
   // Setup the default log sink.
   srslog::set_default_sink(
       (args.log.filename == "stdout")
@@ -639,16 +639,18 @@ int main(int argc, char* argv[])
     }
   }
 #endif
-
+   printf("Attaching Logs...");
   // Start the log backend.
   srslog::init();
 
-  srslog::fetch_basic_logger("ALL").set_level(srslog::basic_levels::warning);
-  srslog::fetch_basic_logger("POOL").set_level(srslog::basic_levels::warning);
+  srslog::fetch_basic_logger("ALL").set_level(srslog::basic_levels::debug);
+  srslog::fetch_basic_logger("POOL").set_level(srslog::basic_levels::debug);
   srsran::log_args(argc, argv, "ENB");
 
+  printf("Logs attached...");
+  printf("Scalling CPUs...");
   srsran::check_scaling_governor(args.rf.device_name);
-
+  printf("CPUs Scalled...");
   // Set up the JSON log channel used by metrics and events.
   srslog::sink& json_sink =
       srslog::fetch_file_sink(args.general.report_json_filename, 0, false, srslog::create_json_formatter());
@@ -663,16 +665,19 @@ int main(int argc, char* argv[])
     event_logger::configure(json_channel, format);
   }
 
+  printf("Locking all objects...");
   if (mlockall((uint32_t)MCL_CURRENT | (uint32_t)MCL_FUTURE) == -1) {
     srsran::console("Failed to `mlockall`: {}", errno);
   }
-
+  printf("Creating ENB...");
   // Create eNB
   unique_ptr<srsenb::enb> enb{new srsenb::enb(srslog::get_default_sink())};
   if (enb->init(args) != SRSRAN_SUCCESS) {
+    printf("Failled to create ENB");
     enb->stop();
     return SRSRAN_ERROR;
   }
+  printf("Created ENB");
 
   // Set metrics
   metricshub.init(enb.get(), args.general.metrics_period_secs);

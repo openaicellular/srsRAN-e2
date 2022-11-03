@@ -190,7 +190,7 @@ float rf_zmq_get_rssi(void* h)
 
 int rf_zmq_open(char* args, void** h)
 {
-  return rf_zmq_open_multi(args, h, 1);
+  return rf_zmq_open_multi(args, h, 2);
 }
 
 int rf_zmq_open_multi(char* args, void** h, uint32_t nof_channels)
@@ -302,6 +302,10 @@ int rf_zmq_open_multi(char* args, void** h, uint32_t nof_channels)
       fprintf(stderr, "[zmq] Error: creating new context\n");
       goto clean_exit;
     }
+
+
+    fprintf(stdout, "[zmq] %d -> NOF Channels\n", handler->nof_channels);
+    fprintf(stdout, "[zmq] %s -> Args \n", args);
 
     for (int i = 0; i < handler->nof_channels; i++) {
       // rx_port
