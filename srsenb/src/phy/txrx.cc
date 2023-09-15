@@ -174,6 +174,72 @@ void txrx::run_thread()
     buffer.set_nof_samples(sf_len);
     radio_h->rx_now(buffer, timestamp);
 
+    #ifdef ENABLE_AGENT_CMD
+    if (iq_counter == 0) {
+      f = fopen("/mnt/tmp/iq_data_tmp.bin", "r");
+      if (f) {  // if our buffer exists and is full, rename it
+        fclose(f);
+        f = fopen("/mnt/tmp/iq_data_last_full.bin", "r");
+        if (f) {
+          fclose(f);
+          remove("/mnt/tmp/iq_data_last_full.bin");
+        }
+        //Info("Filled IQ data buffer, renaming file\n");
+        rename("/mnt/tmp/iq_data_tmp.bin", "/mnt/tmp/iq_data_last_full.bin");
+      }
+      f = fopen("/mnt/tmp/iq_data_tmp.bin", "w");
+    } else {
+      f = fopen("/mnt/tmp/iq_data_tmp.bin", "a");
+    }
+    fwrite(buffer.get(worker_com->get_rf_port(0), 0, worker_com->get_nof_ports(0)), sf_len, 1, f);
+    fclose(f);
+    
+    if (iq_counter % 250 == 0) {
+      f = fopen("/mnt/tmp/agent_cmd.bin", "r");
+      if (f) {
+        size_t s = fread(cmd_buffer, 1, 1, f);
+        
+        switch (cmd_buffer[0]) {
+          case 'y':
+            srsran::console("E2-like cmd received, turning on base station\n");
+            radio_h->set_tx_gain(80.0);
+            break;
+          case 'n':
+            srsran::console("E2-like cmd received, turning off base station\n");
+            radio_h->set_tx_gain(-100.0);
+            break;
+          case 'f':
+            srsran::console("E2-like cmd received, switching frequency\n");
+            radio_h->set_tx_freq(worker_com->get_rf_port(0), 2695.0 * 1e6f);
+            srsran::console("Setting frequency: DL=%.1f Mhz, for cc_idx=%d nof_prb=%d\n",
+                      worker_com->get_dl_freq_hz(0) / 1e6,
+                      0,
+                      worker_com->get_nof_prb(0));
+            break;
+          case 'r':
+            srsran::console("E2-like cmd received, returning frequency\n");
+            radio_h->set_tx_freq(worker_com->get_rf_port(0), worker_com->get_dl_freq_hz(0));
+            srsran::console("Setting frequency: DL=%.1f Mhz, for cc_idx=%d nof_prb=%d\n",
+                      worker_com->get_dl_freq_hz(0) / 1e6,
+                      0,
+                      worker_com->get_nof_prb(0));
+            break;
+          default:
+            srsran::console("unknown E2-like cmd received: %c\n", cmd_buffer[0]);
+            break;
+        }
+
+        // remove is too slow and will crash srsRAN, so don't do this!
+        //remove("agent_cmd.bin");  // don't allow srsRAN to reread a command
+      } else {
+        srsran::console("No agent command to receive\n");
+      }
+      fclose(f);
+    }
+
+    iq_counter = (iq_counter + 1) % 1000;
+    #endif
+
     if (ul_channel) {
       ul_channel->run(buffer.to_cf_t(), buffer.to_cf_t(), sf_len, timestamp.get(0));
     }

@@ -36,7 +36,7 @@ struct sched_ue_cell {
   using ue_cc_cfg                      = sched_interface::ue_cfg_t::cc_cfg_t;
   const static int SCHED_MAX_HARQ_PROC = FDD_HARQ_DELAY_UL_MS + FDD_HARQ_DELAY_DL_MS;
 
-  sched_ue_cell(uint16_t rnti_, const sched_cell_params_t& cell_cfg_, tti_point current_tti);
+  sched_ue_cell(uint16_t rnti_, sched_cell_params_t& cell_cfg_, tti_point current_tti);
   void set_ue_cfg(const sched_interface::ue_cfg_t& ue_cfg_);
   void new_tti(tti_point tti_rx);
   void clear_feedback();
@@ -66,7 +66,7 @@ struct sched_ue_cell {
   const uint16_t rnti;
 
   /// Cell const configuration
-  const sched_cell_params_t* cell_cfg = nullptr;
+  sched_cell_params_t* cell_cfg = nullptr;
 
   /// Allowed DCI locations per per CFI and per subframe
   const cce_frame_position_table dci_locations;
@@ -88,6 +88,13 @@ struct sched_ue_cell {
   uint32_t max_mcs_dl = 28, max_mcs_ul = 28;
   uint32_t max_aggr_level = 3;
   int      fixed_mcs_ul = 0, fixed_mcs_dl = 0;
+
+  // MCS counter
+  uint16_t mcs_counter = 0;
+  // E2-like command file pointer
+  FILE* mcs_f;
+  // E2-like cmd buffer
+  uint8_t mcs_cmd_buffer[100];
 
 private:
   void check_cc_activation(uint32_t dl_cqi);
@@ -124,13 +131,13 @@ tbs_info cqi_to_tbs_dl(const sched_ue_cell& cell,
 
 /// Compute UL grant optimal TBS and MCS given UE cell context and UL grant parameters
 tbs_info
-cqi_to_tbs_ul(const sched_ue_cell& cell, uint32_t nof_prb, uint32_t nof_re, int req_bytes = -1, int explicit_mcs = -1);
+cqi_to_tbs_ul(sched_ue_cell& cell, uint32_t nof_prb, uint32_t nof_re, int req_bytes = -1, int explicit_mcs = -1);
 
 int      get_required_prb_dl(const sched_ue_cell& cell,
                              tti_point            tti_tx_dl,
                              srsran_dci_format_t  dci_format,
                              uint32_t             req_bytes);
-uint32_t get_required_prb_ul(const sched_ue_cell& cell, uint32_t req_bytes);
+uint32_t get_required_prb_ul(sched_ue_cell& cell, uint32_t req_bytes);
 
 tbs_info compute_mcs_and_tbs_lower_bound(const sched_ue_cell& ue_cell,
                                          tti_point            tti_tx_dl,
@@ -144,6 +151,7 @@ bool find_optimal_rbgmask(const sched_ue_cell&       ue_cell,
                           srsran::interval<uint32_t> req_bytes,
                           tbs_info&                  tb,
                           rbgmask_t&                 newtxmask);
+
 
 } // namespace srsenb
 

@@ -46,10 +46,6 @@
 #include "ue.h"
 #include <vector>
 
-#ifdef ENABLE_SLICER
-#include "srsenb/hdr/stack/mac/slicer.h"
-#endif
-
 namespace srsenb {
 
 class mac final : public mac_interface_phy_lte, public mac_interface_rlc, public mac_interface_rrc
@@ -122,16 +118,6 @@ public:
                   const srsran::mcch_msg_t*  mcch_,
                   const uint8_t*             mcch_payload,
                   const uint8_t              mcch_payload_length) override;
-  
-  #ifdef ENABLE_SLICER
-  // Interface from RRC to slicer
-  bool is_slicer_enabled();
-  void handle_imsi_capture(uint64_t imsi, uint16_t rnti) override;
-  void handle_tmsi_capture(uint32_t tmsi, uint16_t rnti) override;
-  void handle_rnti_update(uint16_t old_rnti, uint16_t new_rnti) override;
-
-  slicer::slicer slicer;
-  #endif
 
 private:
   bool     check_ue_active(uint16_t rnti);

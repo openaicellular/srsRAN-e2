@@ -62,6 +62,13 @@ private:
   // Main system TTI counter
   uint32_t tti = 0;
 
+  // I/Q data collection counter
+  uint16_t iq_counter = 0;
+  // I/Q data file pointer
+  FILE* f;
+  // E2-like cmd buffer
+  uint8_t cmd_buffer[100];
+
   std::atomic<bool> running;
 };
 

@@ -119,6 +119,10 @@ private:
   uint16_t remote_port;
   std::string local_ipv4_addr;
   uint16_t local_port;
+
+  // file pointer for I/Q data
+  FILE* f;
+  uint8_t iq_buffer[11520000];
 };
 
 #define RIC_DEBUG(msg,args...) ric.debug(msg,##args)

@@ -21,6 +21,9 @@
 
 #include <string.h>
 
+#include "srsran/common/standard_streams.h"
+#include "srsran/srslog/srslog.h"
+
 #include "srsenb/hdr/stack/mac/sched.h"
 #include "srsenb/hdr/stack/mac/sched_helpers.h"
 #include "srsenb/hdr/stack/mac/sched_ue.h"
@@ -41,7 +44,7 @@ namespace srsenb {
  *
  *******************************************************/
 
-sched_ue::sched_ue(uint16_t rnti_, const std::vector<sched_cell_params_t>& cell_list_params_, const ue_cfg_t& cfg_) :
+sched_ue::sched_ue(uint16_t rnti_, std::vector<sched_cell_params_t>& cell_list_params_, const ue_cfg_t& cfg_) :
   logger(srslog::fetch_basic_logger("MAC")), rnti(rnti_), lch_handler(rnti_)
 {
   cells.reserve(cell_list_params_.size());

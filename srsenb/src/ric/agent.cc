@@ -10,6 +10,7 @@
 
 #include <sys/socket.h>
 #include <netinet/sctp.h>
+#include <netinet/tcp.h>
 
 #include "srsenb/hdr/enb.h"
 #include "srsenb/hdr/ric/agent_defs.h"
@@ -30,6 +31,8 @@
 #ifdef ENABLE_SLICER
 #include "srsenb/hdr/stack/mac/slicer_test_utils.h"
 #endif
+
+#define E2_LIKE
 
 namespace ric {
 
@@ -391,19 +394,25 @@ int agent::connect()
       ric_socket.close();
   if (!ric_socket.open_socket(srsran::net_utils::addr_family::ipv4,
 			      srsran::net_utils::socket_type::stream,
+  #if defined(USE_TCP)
+                              srsran::net_utils::protocol_type::TCP)) {
+    RIC_ERROR("failed to open a TCP socket to RIC; stopping agent\n");
+  #else
 			      srsran::net_utils::protocol_type::SCTP)) {
     RIC_ERROR("failed to open an SCTP socket to RIC; stopping agent\n");
+  #endif
     /* Cannot recover from this error, so stop the agent. */
     stop();
     set_state(RIC_DISABLED);
     return SRSRAN_ERROR;
   }
 
+
   if (strlen(args.ric_agent.local_ipv4_addr.c_str()) > 0
       || args.ric_agent.local_port) {
     if (!ric_socket.bind_addr(args.ric_agent.local_ipv4_addr.c_str(),
 			      args.ric_agent.local_port)) {
-      RIC_ERROR("failed to bind local SCTP address/port (%s,%d)\n",
+      RIC_ERROR("failed to bind local sctp address/port (%s,%d)\n",
 		args.ric_agent.local_ipv4_addr.c_str(),
 		args.ric_agent.local_port);
       stop();
@@ -412,6 +421,7 @@ int agent::connect()
     }
   }
 
+  // initmsg is not necessary for TCP, the other setsockopts are though
   /* Set specific stream options for this socket. */
   struct sctp_initmsg initmsg = { 1,1,3,5 };
   if (setsockopt(ric_socket.fd(),IPPROTO_SCTP,SCTP_INITMSG,
@@ -448,11 +458,14 @@ int agent::connect()
       handle_message(std::move(pdu),from,sri,flags);
   };
   rx_sockets->add_socket_handler(ric_socket.fd(),srsran::make_sctp_sdu_handler(ric, agent_queue, ric_socket_handler)); // add_socket_sctp_pdu_handler renamed to add_socket_handler
+  // for TCP just use make_sdu_handler
+
 
   set_state(RIC_CONNECTED);
   RIC_INFO("connected to RIC on %s",
 	   args.ric_agent.remote_ipv4_addr.c_str());
 
+  #if !defined(E2_LIKE)
   /* Send an E2Setup request to RIC. */
   ret = ric::e2ap::generate_e2_setup_request(this,&buf,&len);
   if (ret) {
@@ -478,7 +491,7 @@ int agent::connect()
    * in this thread since it's dedicated to the connection.  Later, we
    * need to be more careful.
    */
-  while (state == RIC_CONNECTED && !is_state_stale(30)) {
+  while (state == RIC_CONNECTED && !is_state_stale(60)) {
     RIC_DEBUG("waiting for E2setupResponse...\n");
     sleep(5);
   }
@@ -489,8 +502,14 @@ int agent::connect()
     handle_connection_error();
     return 1;
   }*/
+  #else
 
-  return 0;
+  RIC_INFO("E2-like interface enabled, skipping setup request\n");
+  set_state(RIC_ESTABLISHED);
+
+  #endif
+
+  return SRSRAN_SUCCESS;
 }
 
 bool agent::handle_message(srsran::unique_byte_buffer_t pdu,
@@ -516,6 +535,60 @@ bool agent::handle_message(srsran::unique_byte_buffer_t pdu,
     return true;
   }
 
+  #if defined(E2_LIKE)
+
+  RIC_INFO("received e2-like message: %.*s\n", pdu->N_bytes, pdu->msg);
+  // agent_cmd.bin handled in txrx.cc to control PHY layer
+  f = fopen("/mnt/tmp/agent_cmd.bin", "w");
+  fwrite(pdu->msg, pdu->N_bytes, 1, f);
+  fclose(f);
+  RIC_INFO("wrote e2-like message to agent_cmd.bin\n");
+  // read I/Q data saved by txrx.cc and send it through SCTP
+  
+  f = fopen("/mnt/tmp/iq_data_last_full.bin", "r");
+  if (f) {
+    fread(iq_buffer, 614400, 1, f);
+  } else {
+    memset(iq_buffer, 0, 614400);
+  }
+  fclose(f);
+
+  // #ifdef UL_RATE
+  // uint8_t ul_rate[5] = {0,0,0,0,0};
+  // f = fopen("/mnt/tmp/ul_rate.bin", "r");
+  // if (f) {
+  //   fread(ul_rate, sizeof(float), 1, f);
+  // } else {
+  //   memset(ul_rate, 0, 5);
+  // }
+  // fclose(f);
+  // RIC_INFO("read ul_rate.bin");
+  // #endif
+
+  uint8_t* buf = iq_buffer;
+  int size = 0;
+  
+  auto time = std::chrono::system_clock::now().time_since_epoch();
+  std::chrono::seconds seconds = std::chrono::duration_cast< std::chrono::seconds >(time);
+  std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(time);
+  RIC_INFO("Timestamp: %0.7f\n", (double) seconds.count() + ((double) (ms.count() % 1000)/1000.0));
+  
+  for (int i = 0; i < 614400; i += 16384) {
+    size = (614400 - i > 16384) ? 16384 : 614400 - i;
+    buf += 16384;
+    send_sctp_data(buf, 16384);
+  }
+
+  // #ifdef UL_RATE
+  // send_sctp_data(ul_rate, 5);
+  // #endif
+
+  RIC_INFO("sent I/Q buffer\n");
+
+  return true;
+
+  #else
+
   /* Otherwise, handle the message. */
   ret = ric::e2ap::handle_message(this,0,pdu->msg,pdu->N_bytes);
   if (ret == SRSRAN_SUCCESS)
@@ -524,6 +597,8 @@ bool agent::handle_message(srsran::unique_byte_buffer_t pdu,
     RIC_ERROR("failed to handle incoming message (%d)\n",ret);
     return false;
   }
+
+  #endif
 }
 
 bool agent::send_sctp_data(uint8_t *buf,ssize_t len)

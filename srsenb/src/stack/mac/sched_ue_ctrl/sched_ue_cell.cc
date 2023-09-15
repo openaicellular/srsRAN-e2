@@ -22,6 +22,7 @@
 #include "srsenb/hdr/stack/mac/sched_ue_ctrl/sched_ue_cell.h"
 #include "srsenb/hdr/stack/mac/sched_helpers.h"
 #include "srsenb/hdr/stack/mac/sched_phy_ch/sched_dci.h"
+#include "srsran/common/standard_streams.h"
 #include <numeric>
 
 #define CHECK_VALID_CC(feedback_type)                                                                                  \
@@ -38,7 +39,7 @@ namespace srsenb {
  *                sched_ue_cell
  *******************************************************/
 
-sched_ue_cell::sched_ue_cell(uint16_t rnti_, const sched_cell_params_t& cell_cfg_, tti_point current_tti_) :
+sched_ue_cell::sched_ue_cell(uint16_t rnti_, sched_cell_params_t& cell_cfg_, tti_point current_tti_) :
   logger(srslog::fetch_basic_logger("MAC")),
   rnti(rnti_),
   cell_cfg(&cell_cfg_),
@@ -428,9 +429,49 @@ tbs_info cqi_to_tbs_dl(const sched_ue_cell& cell,
   return ret;
 }
 
-tbs_info cqi_to_tbs_ul(const sched_ue_cell& cell, uint32_t nof_prb, uint32_t nof_re, int req_bytes, int explicit_mcs)
+tbs_info cqi_to_tbs_ul(sched_ue_cell& cell, uint32_t nof_prb, uint32_t nof_re, int req_bytes, int explicit_mcs)
 {
   using ul64qam_cap    = sched_interface::ue_cfg_t::ul64qam_cap;
+  
+  #ifdef ENABLE_AGENT_CMD
+  //srsran::console("CQI to TBS UL\n");
+  if (cell.mcs_counter == 0) {
+    cell.mcs_f = fopen("/mnt/tmp/agent_cmd.bin", "r");
+    if (cell.mcs_f) {
+      size_t s = fread(cell.mcs_cmd_buffer, 1, 1, cell.mcs_f);
+      
+      switch (cell.mcs_cmd_buffer[0]) {
+        case 'm':
+          if(cell.fixed_mcs_ul == -1){
+            // break;
+          }
+          else{
+            srsran::console("E2-like cmd received, using adaptive MCS\n");
+            cell.fixed_mcs_ul = -1;
+          }  
+          // srsran::console("E2-like cmd received, using adaptive MCS\n"); 
+          break;
+        case 'z':
+          if(cell.fixed_mcs_ul > 0){
+            // break;
+          }
+          else{
+            srsran::console("E2-like cmd received, using fixed MCS\n");
+            cell.fixed_mcs_ul = cell.cell_cfg->sched_cfg->pusch_mcs;
+          }
+          // srsran::console("E2-like cmd received, using fixed MCS\n");
+          break;
+        default:
+          srsran::console("unknown E2-like cmd received: %c\n", cell.mcs_cmd_buffer[0]);
+          break;
+      }
+    } else { srsran::console("error opening agent_cmd.bin\n"); perror("error"); }
+    fclose(cell.mcs_f);
+  } // else { srsran::console("error opening agent_cmd.bin\n"); perror("error"); }
+  
+  cell.mcs_counter = (cell.mcs_counter + 1) % 250;
+  #endif
+
   int  mcs             = explicit_mcs >= 0 ? explicit_mcs : cell.fixed_mcs_ul;
   bool ulqam64_enabled = cell.get_ue_cfg()->support_ul64qam == ul64qam_cap::enabled;
 
@@ -474,7 +515,7 @@ int get_required_prb_dl(const sched_ue_cell& cell,
   return (upper_tbs < 0) ? 0 : ((upper_tbs < (int)req_bytes) ? -1 : static_cast<int>(upper_nprb));
 }
 
-uint32_t get_required_prb_ul(const sched_ue_cell& cell, uint32_t req_bytes)
+uint32_t get_required_prb_ul(sched_ue_cell& cell, uint32_t req_bytes)
 {
   const static int MIN_ALLOC_BYTES = 10; /// There should be enough space for RLC header + BSR + some payload
   if (req_bytes == 0) {

@@ -44,7 +44,7 @@ class sched_ue
   using ue_cfg_t = sched_interface::ue_cfg_t;
 
 public:
-  sched_ue(uint16_t rnti, const std::vector<sched_cell_params_t>& cell_list_params_, const ue_cfg_t& cfg);
+  sched_ue(uint16_t rnti, std::vector<sched_cell_params_t>& cell_list_params_, const ue_cfg_t& cfg);
   void new_subframe(tti_point tti_rx, uint32_t enb_cc_idx);
 
   /*************************************************************
@@ -82,11 +82,6 @@ public:
   const ue_cfg_t&           get_ue_cfg() const { return cfg; }
   uint32_t                  get_aggr_level(uint32_t enb_cc_idx, uint32_t nof_bits);
   void                      ul_buffer_add(uint8_t lcid, uint32_t bytes);
-
-#ifdef ENABLE_SLICER
-  void                             set_slice_status(uint8_t status) { slice_status = status; }
-  uint8_t                          get_slice_status() const { return slice_status; }
-#endif
 
   /*******************************************************
    * Functions used by scheduler metric objects
@@ -217,9 +212,7 @@ private:
   uint32_t cqi_request_tti = 0;
   uint16_t rnti            = 0;
   uint32_t max_msg3retx    = 0;
-  #ifdef ENABLE_SLICER
-  uint8_t slice_status = 2;
-  #endif
+
   bool phy_config_dedicated_enabled = false;
 
   tti_point                  current_tti;
