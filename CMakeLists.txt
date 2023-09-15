@@ -111,6 +111,9 @@ option(ENABLE_RIC_AGENT_KPM    "Enable RIC E2 Agent KPM metrics"  ON)
 option(ENABLE_RIC_AGENT_NEXRAN "Enable RIC E2 Agent NexRAN model" OFF)
 option(ENABLE_SLICER           "Enable NexRAN Slicer"             OFF)
 
+option(ENABLE_E2_LIKE          "Enable E2-like interface"            OFF)
+option(ENABLE_AGENT_CMD        "Enable RAN control through E2-like"  OFF)
+
 if(ENABLE_RIC_AGENT)
   add_definitions(-DENABLE_RIC_AGENT)
 else()
@@ -121,6 +124,13 @@ if(ENABLE_RIC_AGENT_KPM)
 endif()
 if(ENABLE_SLICER)
   add_definitions(-DENABLE_SLICER)
+endif()
+
+if(ENABLE_E2_LIKE)
+  add_definitions(-DE2_LIKE)
+endif()
+if(ENABLE_AGENT_CMD)
+  add_definitions(-DENABLE_AGENT_CMD)
 endif()
 
 

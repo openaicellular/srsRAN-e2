@@ -434,7 +434,7 @@ tbs_info cqi_to_tbs_ul(sched_ue_cell& cell, uint32_t nof_prb, uint32_t nof_re, i
   using ul64qam_cap    = sched_interface::ue_cfg_t::ul64qam_cap;
   
   #ifdef ENABLE_AGENT_CMD
-  //srsran::console("CQI to TBS UL\n");
+  // srsran::console("CQI to TBS UL\n");
   if (cell.mcs_counter == 0) {
     cell.mcs_f = fopen("/mnt/tmp/agent_cmd.bin", "r");
     if (cell.mcs_f) {

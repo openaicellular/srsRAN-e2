@@ -32,8 +32,6 @@
 #include "srsenb/hdr/stack/mac/slicer_test_utils.h"
 #endif
 
-#define E2_LIKE
-
 namespace ric {
 
 bool e2ap_xer_print;
